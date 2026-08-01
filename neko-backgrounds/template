@@ -1,0 +1,16 @@
+# Template file for 'neko-backgrounds'
+pkgname=neko-backgrounds
+version=6.9
+revision=1
+archs=x86_64
+wrksrc="neko-backgrounds"
+short_desc="Colección de fondos de pantalla Neko"
+maintainer="JavierC"
+license="GPL-3.0-or-later"
+homepage="https://codeberg.org/Neko-Void/neko-backgrounds"
+distfiles="https://codeberg.org/Neko-Void/neko-backgrounds/archive/${version}.tar.gz"
+checksum=3a3106b4e3edf49f9b56b3c9085db2f25edaee8e1e986cf8a7446550e59cc709
+
+do_install() {
+    vcopy usr/share usr
+}

@@ -1,0 +1,13 @@
+# Template file for 'python3-inputs'
+pkgname=python3-inputs
+version=0.5
+revision=1
+build_style=python3-pep517
+hostmakedepends="python3-setuptools python3-wheel"
+depends="python3"
+short_desc="Cross-platform Python support for keyboards, mice and gamepads"
+maintainer="Javierc"
+license="MIT"
+homepage="https://github.com/zeth/inputs"
+distfiles="https://github.com/zeth/inputs/archive/refs/tags/v${version}.tar.gz"
+checksum=d8e8a4b54747e102c4ab27f9eff0e6d64207690d7dbc75d2f6c6364881066fee

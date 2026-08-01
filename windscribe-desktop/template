@@ -1,0 +1,40 @@
+# Template file for 'windscribe-desktop'
+pkgname=windscribe-desktop
+version=2.22.10
+revision=1
+archs="x86_64"
+build_style=fetch
+short_desc="Windscribe Desktop VPN Client (proprietary...)"
+maintainer="Javiercplus"
+license="custom:proprietary"
+homepage="https://windscribe.com"
+distfiles="https://codeberg.org/javiercplus/Windscribe-void/releases/download/deb/windscribe_${version}_amd64.deb"
+checksum=ac58048238ad2c3c59cb22b0c8ea0741f7583d90baa2ec258acc04c70632c225
+nopie=yes
+nostrip=yes
+do_install() {
+	# Extraer el .deb directamente en ${DESTDIR}
+	vextract -C "${DESTDIR}" "windscribe_${version}_amd64.deb"
+
+	# 1. Eliminar artefactos de systemd (no usados en Void)
+	rm -rf "${DESTDIR}/usr/lib/systemd"
+
+	# 2. Eliminar autostart legacy (no compatible con runit)
+	rm -rf "${DESTDIR}/etc/windscribe/autostart"
+
+	# 3. Hacer el CLI accesible globalmente
+	vmkdir usr/bin
+	ln -sf /opt/windscribe/windscribe-cli "${DESTDIR}/usr/bin/windscribe"
+
+	# 4. Ajustar el lanzador .desktop para usar pkexec
+	sed -i 's|^Exec=.*|Exec=pkexec /opt/windscribe/Windscribe|' \
+		"${DESTDIR}/usr/share/applications/windscribe.desktop"
+
+	# 5. Normalizar nombres de íconos (minúsculas)
+	for size in 16 24 32 48 64 128 256; do
+		if [ -f "${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps/Windscribe.png" ]; then
+			mv "${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps/Windscribe.png" \
+			   "${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps/windscribe.png"
+		fi
+	done
+}

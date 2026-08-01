@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# Forzamos las librerías del sistema para evitar conflictos de libstdc++
+export LD_PRELOAD="/usr/\$LIB/libstdc++.so.6:/usr/\$LIB/libgcc_s.so.1:/usr/\$LIB/libxcb.so.1:${LD_PRELOAD}"
+
+# Aseguramos que los directorios necesarios existan
+mkdir -p ~/steam_sandbox
+mkdir -p ~/.local/share/applications
+
+# Ejecutamos Steam dentro del entorno aislado de bubblewrap
+exec bwrap \
+  --ro-bind /usr /usr \
+  --ro-bind /lib /lib \
+  --ro-bind /lib64 /lib64 \
+  --symlink usr/lib /lib32 \
+  --ro-bind /etc /etc \
+  --ro-bind /bin /bin \
+  --ro-bind /sbin /sbin \
+  --ro-bind /sys /sys \
+  --dev-bind /dev /dev \
+  --proc /proc \
+  --bind /tmp /tmp \
+  --bind /run /run \
+  --bind ~/steam_sandbox /home/$USER \
+  --bind-try /run/media /run/media \
+  --bind-try /mnt /mnt \
+  --bind-try ~/.local/share/applications /home/$USER/.local/share/applications \
+  --ro-bind-try ~/.Xauthority /home/$USER/.Xauthority \
+  --setenv HOME /home/$USER \
+  --setenv DISPLAY "$DISPLAY" \
+  --setenv XAUTHORITY "/home/$USER/.Xauthority" \
+  --setenv DBUS_SESSION_BUS_ADDRESS "$DBUS_SESSION_BUS_ADDRESS" \
+  --setenv XDG_RUNTIME_DIR "/run/user/$(id -u)" \
+  --setenv XDG_DATA_DIRS "/usr/share:/usr/local/share" \
+  /usr/lib/steam/bin_steam.sh -no-cef-sandbox "$@"

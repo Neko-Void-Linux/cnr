@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# Crear grupo windscribe si no existe
+if ! getent group windscribe >/dev/null 2>&1; then
+	groupadd --system windscribe
+fi
+
+# Configurar servicio runit
+mkdir -p /etc/sv/windscribe-helper
+cat > /etc/sv/windscribe-helper/run <<'EOF'
+#!/bin/sh
+exec 2>&1
+exec /opt/windscribe/helper
+EOF
+chmod +x /etc/sv/windscribe-helper/run
+
+# Habilitar servicio
+if [ ! -e /var/service/windscribe-helper ]; then
+	ln -sf /etc/sv/windscribe-helper /var/service/
+fi
+
+# Permisos para GUI
+setcap cap_setgid+ep /opt/windscribe/Windscribe 2>/dev/null || true
+
+# Actualizar .desktop
+if command -v update-desktop-database >/dev/null; then
+	update-desktop-database
+fi

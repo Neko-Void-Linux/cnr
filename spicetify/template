@@ -1,0 +1,25 @@
+# Template file for 'spicetify'
+pkgname=spicetify
+version=2.43.2
+revision=1
+build_style=go
+go_import_path="github.com/spicetify/cli"
+hostmakedepends="go"
+short_desc="Command-line tool to customize Spotify client"
+maintainer="JavierC"
+license="LGPL-2.1-only"
+homepage="https://spicetify.app/"
+distfiles="https://github.com/spicetify/cli/archive/refs/tags/v${version}.tar.gz"
+checksum=3debce8af8e071ff9ec75b6a8a296bbd0bb5963151721b0ad2723660b64f65c5
+
+post_install() {
+	# Instalamos los activos necesarios en una ruta global compartida
+	vmkdir usr/share/spicetify-cli
+	for d in Themes Extensions CustomApps jsHelper css-map.json globals.d.ts; do
+		vcopy "$d" usr/share/spicetify-cli
+	done
+
+	# El sistema de construcción de Go genera el binario como 'cli'
+	# Lo renombramos a 'spicetify' para que sea el comando estándar
+	mv ${DESTDIR}/usr/bin/cli ${DESTDIR}/usr/bin/spicetify
+}

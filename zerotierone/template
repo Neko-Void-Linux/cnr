@@ -1,0 +1,49 @@
+# Template file for 'zerotierone'
+pkgname=zerotierone
+version=1.16.2
+revision=1
+build_style=none
+hostmakedepends="pkg-config gcc make git"
+makedepends="openssl-devel libffi-devel rust cargo linux-headers"
+depends=""
+short_desc="ZeroTier One - Software-defined networking platform"
+maintainer="JavierC <franckeycool@gmail.com>"
+license="MIT"
+homepage="https://www.zerotier.com/"
+distfiles="https://github.com/franckey02/ZeroTierOne-Void/archive/refs/tags/${version}.tar.gz"
+checksum=126b4f9f5762aa98ddc615f6a65b53c9c11b046c4a6b618e703a9c096ea0ad40
+
+do_build() {
+	cd ${wrksrc}
+	make -j$(nproc) ZT_TARGET=linux-x86_64
+}
+
+do_install() {
+	cd ${wrksrc}
+
+	# --- CP: Instalar el binario real ---
+	vbin zerotier-one    # → esto pone /usr/bin/zerotier-one
+
+	# --- LN: Crear enlaces simbólicos en /usr/bin/ (NO en /usr/sbin/) ---
+	# Void prefiere /usr/bin/ para binarios accesibles por usuarios
+	# Por eso creamos los enlaces allí, no en /usr/sbin/
+	vmkdir usr/bin
+	ln -sf ../bin/zerotier-one ${DESTDIR}/usr/bin/zerotier-cli
+	ln -sf ../bin/zerotier-one ${DESTDIR}/usr/bin/zerotier-idtool
+
+	# --- MAN PAGES ---
+	if [ -f doc/zerotier-one.8 ]; then
+		vman doc/zerotier-one.8
+	fi
+	if [ -f doc/zerotier-cli.1 ]; then
+		vman doc/zerotier-cli.1
+	fi
+	if [ -f doc/zerotier-idtool.1 ]; then
+		vman doc/zerotier-idtool.1
+	fi
+
+	# --- LICENCIA ---
+	if [ -f LICENSE ]; then
+		vlicense LICENSE
+	fi
+}

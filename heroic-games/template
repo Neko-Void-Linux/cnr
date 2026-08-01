@@ -1,0 +1,47 @@
+# Template file for 'heroic-games-launcher-bin'
+pkgname=heroic-games
+version=2.22.0
+revision=1
+archs="x86_64"
+build_style=fetch
+short_desc="Open Source Launcher for GOG, Epic Games and Amazon Games"
+maintainer="Javiercplus"
+license="GPL-3.0-only"
+homepage="https://heroicgameslauncher.com"
+distfiles="https://github.com/Heroic-Games-Launcher/HeroicGamesLauncher/releases/download/v${version}/Heroic-${version}-linux-amd64.deb"
+checksum=4c8585ad7c7a76bd3c8058aa995b9064f457603f3b6afbd9114433cf4af7ecd2
+
+# Dependencias mapeadas de Debian a Void Linux
+depends="gtk+3 libnotify nss libXScrnSaver libXtst xdg-utils at-spi2-core libuuid libsecret"
+
+# Evita que XBPS intente modificar los binarios ya compilados
+nostrip=yes
+
+do_install() {
+    vextract "Heroic-${version}-linux-amd64.deb"
+    
+    # 1. Instalación del núcleo de la aplicación
+    vmkdir opt
+    cp -R opt/Heroic "${DESTDIR}/opt/"
+
+    # 2. Enlace simbólico para ejecución global
+    vmkdir usr/bin
+    ln -sf /opt/Heroic/heroic "${DESTDIR}/usr/bin/heroic"
+
+    # 3. Archivos Desktop e Iconos
+    vmkdir usr/share/applications
+    vcopy "usr/share/applications/*.desktop" usr/share/applications
+    
+    vmkdir usr/share/icons
+    vcopy "usr/share/icons/*" usr/share/icons
+
+    # 4. Seguridad (Chrome Sandbox)
+    # Se aplica el permiso SUID para asegurar el aislamiento de procesos de Electron
+    chmod 4755 "${DESTDIR}/opt/Heroic/chrome-sandbox"
+
+    # 5. Perfil de AppArmor (Opcional pero incluido por trazabilidad)
+    if [ -f "opt/Heroic/resources/apparmor-profile" ]; then
+        vmkdir etc/apparmor.d
+        vcopy "opt/Heroic/resources/apparmor-profile" etc/apparmor.d/heroic
+    fi
+}

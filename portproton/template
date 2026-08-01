@@ -1,0 +1,164 @@
+# Template file for 'portproton'
+pkgname=portproton
+version=1.7.5.0
+revision=2
+archs="x86_64"
+short_desc="PortProton - a tool for installing Windows games and software on Linux"
+maintainer="JavierC"
+license="GPL-3.0-or-later"
+homepage="https://codeberg.org/javiercplus/PortProton_ALT-void-patch"
+distfiles="https://codeberg.org/javiercplus/PortProton_ALT-void-patch/archive/${version}.tar.gz"
+checksum="c661bf92f79cd6df32311cf7dedb1f64fe33dfe4b77e5bb2fcafaf98c82791bd"
+
+hostmakedepends="desktop-file-utils gtk-update-icon-cache"
+depends="
+	cabextract
+	p7zip
+	curl
+	jq
+	yad
+	xdpyinfo
+	xrandr
+	setxkbmap
+	xterm
+	Vulkan-Tools
+	mesa-demos
+	usbutils
+	hwids
+	exiftool
+	squashfs-tools
+	ocl-icd
+	vulkan-loader
+	libpulseaudio
+	gstreamer1
+	gst-plugins-base1
+	alsa-lib
+	dbus
+	freetype
+	libpng
+	libjpeg-turbo
+	tiff
+	lcms2
+	libgphoto2
+	libxcb
+	libXext
+	libXfixes
+	libXrender
+	libXrandr
+	libXinerama
+	libXcursor
+	libXi
+	libXcomposite
+	libXdamage
+	libXtst
+	libXScrnSaver
+	libXxf86vm
+	libXv
+	libxkbcommon
+	libdrm
+	libglvnd
+	mesa
+	libpciaccess
+	libusb
+	v4l-utils
+	libsamplerate
+	libsndfile
+	audiofile
+	libopenal
+	zlib
+	ncurses
+	glib
+	gtk+3
+	cairo
+	fontconfig
+	libICE
+	libSM
+	libXft
+	pcre2
+	libvorbis
+	samba
+	perl
+"
+
+if [ "$XBPS_TARGET_MACHINE" = "x86_64" ]; then
+	depends+="
+		vulkan-loader-32bit
+		libpulseaudio-32bit
+		gstreamer1-32bit
+		gst-plugins-base1-32bit
+		alsa-lib-32bit
+		freetype-32bit
+		libpng-32bit
+		libjpeg-turbo-32bit
+		tiff-32bit
+		lcms2-32bit
+		libgphoto2-32bit
+		libxcb-32bit
+		libX11-32bit
+		libXext-32bit
+		libXfixes-32bit
+		libXrender-32bit
+		libXrandr-32bit
+		libXinerama-32bit
+		libXcursor-32bit
+		libXi-32bit
+		libXcomposite-32bit
+		libXdamage-32bit
+		libXtst-32bit
+		libXScrnSaver-32bit
+		libXxf86vm-32bit
+		libXv-32bit
+		libxkbcommon-32bit
+		libdrm-32bit
+		libglvnd-32bit
+		mesa-32bit
+		libpciaccess-32bit
+		libusb-32bit
+		v4l-utils-32bit
+		libsamplerate-32bit
+		libsndfile-32bit
+		audiofile-32bit
+		libopenal-32bit
+		zlib-32bit
+		glib-32bit
+		gtk+3-32bit
+		cairo-32bit
+		fontconfig-32bit
+		libICE-32bit
+		libSM-32bit
+		libXft-32bit
+		libvorbis-32bit
+	"
+fi
+
+do_install() {
+	# Crear estructura de directorios
+	vmkdir usr/lib/portproton
+	vmkdir usr/bin
+	vmkdir usr/share/applications
+	vmkdir usr/share/icons/hicolor/scalable/apps
+	vmkdir usr/share/metainfo
+	vmkdir usr/share/licenses/portproton
+
+	# Copiar contenido
+	cp -r ${wrksrc}/* ${DESTDIR}/usr/lib/portproton/
+
+	# Hacer ejecutable el script principal
+	chmod +x ${DESTDIR}/usr/lib/portproton/portproton
+        chmod +x ${DESTDIR}/usr/lib/portproton/portprotonvoid
+	# Crear enlace simbólico
+	ln -sf /usr/lib/portproton/portproton ${DESTDIR}/usr/bin/portproton
+    ln -sf /usr/lib/portproton/portprotonvoid ${DESTDIR}/usr/bin/portprotonvoid
+
+	# Instalar archivos
+	vinstall ${wrksrc}/ru.linux_gaming.PortProton.desktop 644 usr/share/applications
+	vinstall ${wrksrc}/ru.linux_gaming.PortProton.svg 644 usr/share/icons/hicolor/scalable/apps
+	vinstall ${wrksrc}/ru.linux_gaming.PortProton.metainfo.xml 644 usr/share/metainfo
+	vinstall ${wrksrc}/LICENSE 644 usr/share/licenses/portproton
+}
+
+post_install() {
+	# Actualizar cachés
+	gtk-update-icon-cache -qf usr/share/icons/hicolor 2>/dev/null || true
+	update-desktop-database -q usr/share/applications 2>/dev/null || true
+}

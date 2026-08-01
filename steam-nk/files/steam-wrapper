@@ -1,0 +1,88 @@
+#!/bin/bash
+
+# Directorio del sandbox
+SANDBOX_HOME="$HOME/steam_sandbox"
+mkdir -p "$SANDBOX_HOME/.steam"
+mkdir -p "$SANDBOX_HOME/.local/share/Steam"
+mkdir -p "$SANDBOX_HOME/.config"
+mkdir -p "$HOME/.local/share/applications"
+mkdir -p "$HOME/.local/share/icons"
+
+# Construimos los argumentos de bwrap usando un array seguro
+ARGS=(
+  --unshare-pid
+  --ro-bind /usr /usr
+  --ro-bind-try /usr/lib32 /usr/lib32
+  --ro-bind /lib /lib
+  --ro-bind /lib64 /lib64
+  --symlink usr/lib /lib32
+  --ro-bind /etc /etc
+  --ro-bind /bin /bin
+  --ro-bind /sbin /sbin
+  --ro-bind /sys /sys
+  --dev-bind /dev /dev
+  --proc /proc
+  --bind /tmp /tmp
+  --bind /run /run
+  --bind "$SANDBOX_HOME" "/home/$USER"
+  --bind-try /run/media /run/media
+  --bind-try /mnt /mnt
+  --bind-try /media /media
+  --bind-try "$HOME/.local/share/applications" "/home/$USER/.local/share/applications"
+  --bind-try "$HOME/.local/share/icons" "/home/$USER/.local/share/icons"
+)
+
+# ----- Gestión de la autoridad X11 -----
+X_AUTH_FOUND=0
+XAUTH_SRC=""
+
+if [ -n "$XAUTHORITY" ] && [ -e "$XAUTHORITY" ]; then
+    XAUTH_SRC="$XAUTHORITY"
+    X_AUTH_FOUND=1
+elif command -v xauth >/dev/null 2>&1; then
+    XAUTH_FROM_INFO=$(xauth info 2>/dev/null | awk '/Authority file/ {print $3}')
+    if [ -n "$XAUTH_FROM_INFO" ] && [ -e "$XAUTH_FROM_INFO" ]; then
+        XAUTH_SRC="$XAUTH_FROM_INFO"
+        X_AUTH_FOUND=1
+    fi
+fi
+
+if [ $X_AUTH_FOUND -eq 0 ]; then
+    for candidate in "/run/user/$(id -u)/gdm/Xauthority" "/run/user/$(id -u)/.mutter-Xauthority" "/run/user/$(id -u)/xauth"*; do
+        if [ -e "$candidate" ]; then
+            XAUTH_SRC="$candidate"
+            X_AUTH_FOUND=1
+            break
+        fi
+    done
+fi
+
+if [ $X_AUTH_FOUND -eq 0 ] && [ -e "$HOME/.Xauthority" ]; then
+    XAUTH_SRC="$HOME/.Xauthority"
+    X_AUTH_FOUND=1
+fi
+
+if [ $X_AUTH_FOUND -eq 1 ]; then
+    echo "X11 AUTH FOUND: $XAUTH_SRC"
+    ARGS+=( --ro-bind "$XAUTH_SRC" "/home/$USER/.Xauthority" )
+    ARGS+=( --setenv XAUTHORITY "/home/$USER/.Xauthority" )
+else
+    echo "X11 XAUTH NOT FOUND. Usando xhost..."
+    if command -v xhost >/dev/null 2>&1; then
+        xhost +SI:localuser:"$USER" >/dev/null 2>&1
+    else
+        echo "ERROR: 'xhost' no está instalado. Steam no podrá abrir la ventana."
+        exit 1
+    fi
+fi
+
+# Variables de entorno dentro del sandbox
+ARGS+=( --setenv HOME "/home/$USER" )
+ARGS+=( --setenv DISPLAY "$DISPLAY" )
+ARGS+=( --setenv DBUS_SESSION_BUS_ADDRESS "$DBUS_SESSION_BUS_ADDRESS" )
+ARGS+=( --setenv XDG_RUNTIME_DIR "/run/user/$(id -u)" )
+ARGS+=( --setenv XDG_DATA_DIRS "/usr/share:/usr/local/share" )
+ARGS+=( --setenv VERSION_ID "rolling" )
+
+# Ejecutar pasando el arreglo directamente, sin eval
+exec bwrap "${ARGS[@]}" /usr/lib/steam/bin_steam.sh -no-cef-sandbox -cef-disable-gpu "$@"

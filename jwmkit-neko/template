@@ -1,0 +1,51 @@
+# Template file for 'jwmkit-neko'
+pkgname=jwmkit-neko
+version=26.5
+revision=1
+build_style=gnu-configure
+short_desc="JWM configuration and management toolkit"
+maintainer="JavierC"
+license="BSD-3-Clause"
+homepage="https://codeberg.org/Neko-Void/jwmkit-neko"
+checksum="62757df991f01acda2e3a519d11b36e794ebefba03606801ca6db2b9c62f4f05"
+distfiles="https://codeberg.org/Neko-Void/jwmkit-neko/archive/${version}.tar.gz"
+depends="python3 python3-gobject gtk+3 alsa-utils jwm"
+
+do_configure() {
+	:
+}
+
+do_build() {
+	:
+}
+
+do_install() {
+	# Scripts Python (jwmkit_*)
+	for f in PYTHON/jwmkit_*; do
+		vbin "$f"
+	done
+
+	# Script Bash (monitor de batería)
+	vbin BASH/jwmkit_bat_mu
+
+	# Iconos
+	vmkdir usr/share/pixmaps/jwmkit
+	for f in icons/*; do
+		vinstall "$f" 644 usr/share/pixmaps/jwmkit
+	done
+
+	# Documentación
+	vmkdir usr/share/doc/jwmkit
+	for f in doc/*; do
+		vinstall "$f" 644 usr/share/doc/jwmkit
+	done
+
+	# Páginas del manual (man1)
+	for f in man1/*.1; do
+		vman "$f"
+	done
+
+	# Archivo de restauración (se instala en /etc/jwmkit/restore)
+	vmkdir etc/jwmkit/restore
+	vinstall BUILD/DATA/COMMON/restore/original.restore 644 etc/jwmkit/restore
+}

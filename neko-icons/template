@@ -1,0 +1,16 @@
+# Template file for 'neko-icons'
+pkgname=neko-icons
+version=6.5
+revision=1
+archs=x86_64
+wrksrc="neko-icons"
+short_desc="Colección de iconos Neko"
+maintainer="JavierC"
+license="GPL-3.0-or-later"
+homepage="https://codeberg.org/Neko-Void/icons"
+distfiles="https://codeberg.org/Neko-Void/neko-icons/archive/${version}.tar.gz"
+checksum=24aaa777f9d88aecea3e9fc01175f9e6f1c8e05126f331635c9cb925f7431a1e
+
+do_install() {
+    vcopy usr/share usr
+}

@@ -1,0 +1,101 @@
+# Template file for 'mullvad-vpn'
+pkgname=mullvad-vpn
+version=2026.3
+revision=1
+archs="x86_64"
+short_desc="Mullvad VPN client for Linux (unofficial Void package)"
+maintainer="JavierC <tu@email.com>"
+license="Proprietary"
+homepage="https://mullvad.net"
+distfiles="https://github.com/mullvad/mullvadvpn-app/releases/download/${version}/MullvadVPN-${version}_amd64.deb"
+checksum=38c6ee73ae80870688560922a28525b6d0dacc62c2e410938863d7038e931aca
+hostmakedepends="binutils tar xz curl gnupg2"  # binutils para ar, tar/xz para extraer
+depends="wireguard-tools"
+
+do_extract() {
+	# Extraer el .deb como en vesktop
+	ar x ${XBPS_SRCDISTDIR}/${pkgname}-${version}/MullvadVPN-${version}_amd64.deb
+	mkdir -p ${wrksrc}
+	tar xf data.tar.* -C ${wrksrc}  # puede ser .xz o .gz; el * lo maneja
+}
+
+do_install() {
+	# Directorios base
+	vmkdir /opt
+	vmkdir usr/bin
+	vmkdir usr/share/applications
+	vmkdir usr/share/icons/hicolor
+	vmkdir usr/share/bash-completion/completions
+	vmkdir usr/share/fish/vendor_completions.d
+	vmkdir etc/profile.d
+	vmkdir /var/log/mullvad-daemon
+	vmkdir /var/log/mullvad-vpn
+	vmkdir /var/cache/mullvad-vpn
+	vmkdir /etc/mullvad-vpn
+	vmkdir etc/sv/mullvad-daemon/log
+
+	# 1. /opt/Mullvad VPN
+	vcopy opt/Mullvad\ VPN /opt/
+
+	# 2. Binarios principales
+	vbin usr/bin/mullvad
+	vbin usr/bin/mullvad-daemon
+	vinstall usr/bin/mullvad-exclude 4755 /usr/bin mullvad-exclude
+
+	# 3. Enlace simbólico para mullvad-problem-report
+	ln -sf "/opt/Mullvad VPN/resources/mullvad-problem-report" \
+		"${DESTDIR}/usr/bin/mullvad-problem-report"
+
+	# 4. Archivo .desktop e iconos
+	vcopy usr/share/applications/mullvad-vpn.desktop /usr/share/applications/
+	vcopy usr/share/icons/hicolor /usr/share/icons/
+
+	# 5. Completions
+	vcopy usr/share/bash-completion/completions/mullvad /usr/share/bash-completion/completions/
+	vcopy usr/share/fish/vendor_completions.d/mullvad.fish /usr/share/fish/vendor_completions.d/
+
+	# 6. Variables de entorno
+	echo 'export MULLVAD_RESOURCE_DIR="/opt/Mullvad VPN/resources/"' > \
+		"${DESTDIR}/etc/profile.d/mullvad.sh"
+
+	# 7. Servicio runit
+	cat > "${DESTDIR}/etc/sv/mullvad-daemon/run" <<'EOF'
+#!/bin/sh
+MULLVAD_RESOURCE_DIR="/opt/Mullvad VPN/resources/"
+export MULLVAD_RESOURCE_DIR
+exec 2>&1
+exec /usr/bin/mullvad-daemon -vv --disable-stdout-timestamps
+EOF
+	chmod 0755 "${DESTDIR}/etc/sv/mullvad-daemon/run"
+
+	cat > "${DESTDIR}/etc/sv/mullvad-daemon/log/run" <<'EOF'
+#!/bin/sh
+mkdir -p /var/log/mullvad-daemon
+exec svlogd -tt /var/log/mullvad-daemon
+EOF
+	chmod 0755 "${DESTDIR}/etc/sv/mullvad-daemon/log/run"
+
+	# 8. Licencia (opcional, si existe en /opt)
+	vlicense opt/Mullvad\ VPN/LICENSE 2>/dev/null || true
+}
+
+post_install() {
+	vmkdir usr/share/doc/mullvad-vpn
+	cat > "${DESTDIR}/usr/share/doc/mullvad-vpn/README.void" <<'EOF'
+Mullvad VPN para Void Linux (runit)
+
+1. Activar el servicio (opcional):
+   sudo ln -s /etc/sv/mullvad-daemon /var/service/
+
+2. Logs:
+   /var/log/mullvad-daemon/current
+
+3. Uso:
+   mullvad account login <número-de-cuenta>
+   mullvad connect
+
+4. Para desinstalar:
+   sudo xbps-remove mullvad-vpn
+   rm -rf /opt/Mullvad\ VPN /etc/mullvad-vpn /var/cache/mullvad-vpn
+EOF
+}

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Detener y deshabilitar servicio
+if [ -e /var/service/windscribe-helper ]; then
+	rm -f /var/service/windscribe-helper
+	sv down windscribe-helper 2>/dev/null || true
+	sleep 1
+	rm -rf /etc/sv/windscribe-helper
+fi
+
+# Eliminar grupo (opcional: solo si no hay otros usuarios)
+# groupdel windscribe 2>/dev/null || true
+
+# Actualizar .desktop
+if command -v update-desktop-database >/dev/null; then
+	update-desktop-database
+fi
