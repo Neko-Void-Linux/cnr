@@ -1,0 +1,64 @@
+# Template file for 'kasha-installer'
+pkgname=kasha-installer
+version=7.3
+revision=5
+build_style=gnu-configure
+hostmakedepends="pkg-config xxd"
+makedepends="gtk+3-devel"
+depends="bash grub sed cryptsetup xxd"
+short_desc="Modular Linux system installer built with C and GTK+ 3.0"
+maintainer="JavierC"
+license="BSD-3-Clause"
+homepage="https://codeberg.org/javiercplus/Kasha-Installer"
+distfiles="https://codeberg.org/javiercplus/Kasha-Installer/archive/${version}.tar.gz"
+checksum=ed882aa76350afb196fbef2fdc9689d9a10447787d395bd50c561859f93d0035
+
+do_configure() {
+	# No hay nada que configurar
+	:
+}
+
+do_build() {
+	cd ${wrksrc}
+	
+	# Flags de GTK+
+	GTK_CFLAGS=$(pkg-config --cflags gtk+-3.0)
+	GTK_LIBS=$(pkg-config --libs gtk+-3.0)
+	
+	# Directorio de cabeceras (está en include/)
+	HEADER_DIR="include"
+	
+	CFLAGS="-fstack-clash-protection -D_FORTIFY_SOURCE=2 -mtune=generic -O2 -pipe -I${HEADER_DIR} ${GTK_CFLAGS}"
+	
+	# Crear directorio para objetos
+	mkdir -p obj
+	
+	# Recopilar TODOS los archivos .c dentro de src/ (incluye core/, ui/, i18n/)
+	SOURCES=$(find src -name "*.c")
+	if [ -z "$SOURCES" ]; then
+		echo "ERROR: No se encontraron archivos fuente .c"
+		exit 1
+	fi
+	
+	# Compilar cada .c
+	for src in $SOURCES; do
+		obj="obj/$(basename ${src%.c}.o)"
+		${CC} $CFLAGS -c "$src" -o "$obj"
+	done
+	
+	# Enlazar todos los objetos
+	${CC} -o neko_installer obj/*.o ${GTK_LIBS}
+}
+
+do_install() {
+	cd ${wrksrc}
+	
+	# Binario principal
+	vbin neko_installer
+	
+	# Recursos (si existen)
+	if [ -d data ]; then
+		vmkdir usr/share/kasha
+		cp -r data/* ${DESTDIR}/usr/share/kasha/
+	fi
+}
