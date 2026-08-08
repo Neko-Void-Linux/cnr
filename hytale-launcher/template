@@ -1,19 +1,19 @@
 # Template file for 'hytale-launcher'
 pkgname=hytale-launcher
-version=2026.07.29-8228f98
-revision=1
+version=2026.07.29
+revision=2
+_build=8228f98
 archs="x86_64"
 build_style=fetch
 hostmakedepends="unzip"
-depends="gtk+3 webkit2gtk glib-networking gsettings-desktop-schemas
- nss nspr openssl cups pulseaudio alsa-lib libdrm libxkbcommon
- at-spi2-atk atk pango cairo freetype fontconfig expat dbus
- xdg-utils hicolor-icon-theme libstdc++"
-short_desc="Official Hytale launcher."
+# Dependencias segun los NEEDED reales del ELF (webkit2gtk-4.1 + soup3)
+depends="gtk+3 libwebkit2gtk41 libsoup3 gdk-pixbuf glib
+ glib-networking gsettings-desktop-schemas xdg-utils hicolor-icon-theme"
+short_desc="Official Hytale launcher"
 maintainer="Dicov <srdicov@gmail.com>"
-license="Proprietary"
+license="custom:Proprietary"
 homepage="https://hytale.com"
-distfiles="https://launcher.hytale.com/builds/release/linux/amd64/hytale-launcher-${version}.zip"
+distfiles="https://launcher.hytale.com/builds/release/linux/amd64/hytale-launcher-${version}-${_build}.zip"
 checksum=93620ac66905c8601fd396272d6e53d1fd5d28aff93dcad7ee76cdd1eb73a1a0
 
 # Evita que XBPS intente modificar el binario ya compilado
@@ -21,7 +21,7 @@ nostrip=yes
 nopie=yes
 
 do_install() {
-	vextract "hytale-launcher-${version}.zip"
+	vextract "hytale-launcher-${version}-${_build}.zip"
 
 	# 1. Núcleo de la aplicación bajo /opt
 	vmkdir opt/hytale-launcher
