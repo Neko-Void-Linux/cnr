@@ -1,5 +1,5 @@
-# Template file for 'neko-kernel-manager'
-pkgname=neko-kernel-manager
+# Template file for 'Neko-Kernel-Manager'
+pkgname=Neko-Kernel-Manager
 version=1.3.0
 revision=1
 build_style=meson
