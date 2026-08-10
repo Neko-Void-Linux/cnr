@@ -1,8 +1,8 @@
 # Template file for 'hytale-launcher'
 pkgname=hytale-launcher
-version=2026.07.29
+version=2026.08.06
 revision=2
-_build=8228f98
+_build=68d97a2
 archs="x86_64"
 build_style=fetch
 hostmakedepends="unzip"
@@ -13,8 +13,8 @@ short_desc="Official Hytale launcher"
 maintainer="Dicov <srdicov@gmail.com>"
 license="custom:Proprietary"
 homepage="https://hytale.com"
-distfiles="https://launcher.hytale.com/builds/release/linux/amd64/hytale-launcher-${version}-${_build}.zip"
-checksum=93620ac66905c8601fd396272d6e53d1fd5d28aff93dcad7ee76cdd1eb73a1a0
+distfiles="https://launcher.hytale.com/builds/release/linux/amd64/hytale-launcher-latest.zip>hytale-launcher-${version}-${_build}.zip"
+checksum=7aa3483bed31f2a49b83f10223b2ab19ba485adafc30267cdb108211f25a958b
 
 # Evita que XBPS intente modificar el binario ya compilado
 nostrip=yes
