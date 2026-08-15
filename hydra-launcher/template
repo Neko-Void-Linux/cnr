@@ -1,0 +1,44 @@
+pkgname=hydra-launcher
+version=4.1.1
+revision=1
+archs="x86_64"
+create_wrksrc=yes
+hostmakedepends="bsdtar"
+depends="gtk+3 nss alsa-lib nspr at-spi2-atk libsecret libnotify libXtst libXScrnSaver eudev-libudev libcups"
+short_desc="Game launcher with built-in bittorrent client"
+maintainer="Neko-Void-Linux <Neko-Void-Linux@users.noreply.github.com>"
+license="MIT"
+homepage="https://github.com/hydralauncher/hydra"
+distfiles="https://github.com/hydralauncher/hydra/releases/download/v${version}/hydralauncher_${version}_amd64.deb"
+checksum=68cb1643b6345268d00360291bbcc7c10a4391f279d74a3869a84c9ea635fb06
+
+nostrip=yes
+
+shlib_provides="libc.so libc++_shared.so libc.musl-x86_64.so.1 libdl.so liblog.so libm.so"
+
+do_extract() {
+	bsdtar -xf ${XBPS_SRCDISTDIR}/${pkgname}-${version}/hydralauncher_${version}_amd64.deb
+	bsdtar -xf data.tar.* -C ${wrksrc}
+}
+
+do_install() {
+	vmkdir opt
+	vmkdir usr/bin
+	vmkdir usr/share
+
+	if [ -d opt/Hydra ]; then
+		vcopy opt/Hydra opt/
+		ln -s /opt/Hydra/hydralauncher ${DESTDIR}/usr/bin/hydra-launcher
+	fi
+
+	if [ -d usr/share/applications ]; then
+		vcopy usr/share/applications usr/share/
+	fi
+
+	if [ -d usr/share/icons ]; then
+		vcopy usr/share/icons usr/share/
+	fi
+
+	find ${DESTDIR}/opt/Hydra -type d \( -name "*musl*" -o -name "*android*" -o -name "*arm*" \) -exec rm -rf {} +
+	find ${DESTDIR}/opt/Hydra -type f \( -name "*musl*" -o -name "*android*" -o -name "*arm*" \) -delete
+}
