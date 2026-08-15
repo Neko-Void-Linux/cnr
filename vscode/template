@@ -1,0 +1,48 @@
+pkgname=vscode-bin
+version=1.95.3
+revision=1
+archs="x86_64"
+create_wrksrc=yes
+nostrip=yes
+nopie=yes
+hostmakedepends="bsdtar"
+depends="libXtst nss alsa-lib gtk+3 libsecret libnotify libXScrnSaver xdg-utils"
+short_desc="Visual Studio Code (official Microsoft binary)"
+maintainer="Neko-Void-Linux <Neko-Void-Linux@users.noreply.github.com>"
+license="MIT"
+homepage="https://code.visualstudio.com"
+distfiles="https://update.code.visualstudio.com/${version}/linux-deb-x64/stable>vscode-${version}.deb"
+checksum=176286acb16b5bad1f0431947c3fb17813c5a84ee85a3395c7620379a4a70086
+
+do_extract() {
+	bsdtar -xf ${XBPS_SRCDISTDIR}/${pkgname}-${version}/vscode-${version}.deb
+	bsdtar -xf data.tar.* -C ${wrksrc}
+}
+
+do_install() {
+	vmkdir usr/bin
+	vmkdir usr/lib
+	vmkdir usr/share
+
+	if [ -d usr/share/code ]; then
+		mv usr/share/code ${DESTDIR}/usr/lib/
+		ln -s /usr/lib/code/bin/code ${DESTDIR}/usr/bin/code
+	fi
+
+	if [ -d usr/share/applications ]; then
+		for f in usr/share/applications/*.desktop; do
+			if [ -f "$f" ]; then
+				vsed -i 's|/usr/share/code/code|/usr/lib/code/code|g' "$f"
+			fi
+		done
+		vcopy usr/share/applications usr/share/
+	fi
+
+	if [ -d usr/share/pixmaps ]; then
+		vcopy usr/share/pixmaps usr/share/
+	fi
+
+	if [ -d usr/share/bash-completion ]; then
+		vcopy usr/share/bash-completion usr/share/
+	fi
+}
