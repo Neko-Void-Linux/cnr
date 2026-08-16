@@ -94,4 +94,3 @@ do_install() {
 
     msg_normal "=== INSTALACIÓN COMPLETADA ===\n"
 }
-}
