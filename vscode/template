@@ -1,9 +1,8 @@
-pkgname=vscode-bin
+pkgname=vscode
 version=1.95.3
 revision=1
 archs="x86_64"
 create_wrksrc=yes
-build_style=meta
 repository="nonfree"
 restricted=yes
 nostrip=yes
@@ -24,19 +23,23 @@ do_extract() {
 }
 
 do_install() {
+	# Mover archivos de /usr/share/code a /usr/lib/code (FHS)
 	if [ -d usr/share/code ]; then
 		vmkdir usr/lib
 		mv usr/share/code ${DESTDIR}/usr/lib/
 	fi
 
+	# Enlace simbólico en /usr/bin
 	vmkdir usr/bin
 	ln -sf /usr/lib/code/bin/code ${DESTDIR}/usr/bin/code
 
+	# Parchear y copiar lanzadores .desktop
 	if [ -d usr/share/applications ]; then
 		vsed -i 's|/usr/share/code/code|/usr/lib/code/code|g' usr/share/applications/*.desktop
 		vcopy usr/share/applications usr/share/
 	fi
 
+	# Copiar iconos de la aplicación
 	if [ -d usr/share/pixmaps ]; then
 		vcopy usr/share/pixmaps usr/share/
 	fi
