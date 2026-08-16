@@ -1,9 +1,10 @@
+# Template file for 'vscode-bin'
 pkgname=vscode-bin
 version=1.95.3
 revision=1
 archs="x86_64"
 create_wrksrc=yes
-build_style=meta
+metapackage=yes
 hostmakedepends="bsdtar"
 depends="libXtst nss alsa-lib gtk+3 libsecret libnotify libXScrnSaver xdg-utils"
 short_desc="Visual Studio Code (official Microsoft binary)"
@@ -24,15 +25,12 @@ do_extract() {
 }
 
 do_install() {
-	# Copiar la estructura del programa a /usr/lib/code
 	vmkdir usr/lib/code
 	vcopy usr/share/code/* usr/lib/code/
 
-	# Enlace simbólico al ejecutable
 	vmkdir usr/bin
 	ln -sf /usr/lib/code/bin/code ${DESTDIR}/usr/bin/code
 
-	# Escritorio, iconos y autocompletado
 	if [ -d usr/share/applications ]; then
 		vsed -i 's|/usr/share/code/code|/usr/lib/code/code|g' usr/share/applications/*.desktop
 		vcopy usr/share/applications usr/share/
