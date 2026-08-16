@@ -64,24 +64,21 @@ do_extract() {
 do_install() {
     cd "${wrksrc}"
 
-    msg_normal "=== INSTALANDO PAQUETE ===\n"
+    msg_normal "=== INSTALANDO PAQUETE EN /opt/spotify ===\n"
 
-    vmkdir usr
-    vcopy usr/* usr/
-
-    if [ -d "${DESTDIR}/usr/share/spotify" ]; then
-        mkdir -p "${DESTDIR}/usr/lib"
-        mv "${DESTDIR}/usr/share/spotify" "${DESTDIR}/usr/lib/spotify"
+    mkdir -p "${DESTDIR}/opt"
+    if [ -d "usr/share/spotify" ]; then
+        mv "usr/share/spotify" "${DESTDIR}/opt/spotify"
     fi
 
-    if [ -d "${DESTDIR}/usr/lib/spotify/icons" ]; then
+    if [ -d "${DESTDIR}/opt/spotify/icons" ]; then
         mkdir -p "${DESTDIR}/usr/share/icons"
-        mv "${DESTDIR}/usr/lib/spotify/icons/"* "${DESTDIR}/usr/share/icons/" 2>/dev/null || true
+        mv "${DESTDIR}/opt/spotify/icons/"* "${DESTDIR}/usr/share/icons/" 2>/dev/null || true
     fi
 
     mkdir -p "${DESTDIR}/usr/share/applications"
-    if [ -f "${DESTDIR}/usr/lib/spotify/spotify.desktop" ]; then
-        mv "${DESTDIR}/usr/lib/spotify/spotify.desktop" "${DESTDIR}/usr/share/applications/"
+    if [ -f "${DESTDIR}/opt/spotify/spotify.desktop" ]; then
+        mv "${DESTDIR}/opt/spotify/spotify.desktop" "${DESTDIR}/usr/share/applications/"
     fi
 
     if [ -f "${DESTDIR}/usr/share/applications/spotify.desktop" ]; then
@@ -91,9 +88,10 @@ do_install() {
     fi
 
     mkdir -p "${DESTDIR}/usr/bin"
-    ln -sf /usr/lib/spotify/spotify "${DESTDIR}/usr/bin/spotify"
+    ln -sf /opt/spotify/spotify "${DESTDIR}/usr/bin/spotify"
 
-    chmod 755 "${DESTDIR}/usr/lib/spotify/spotify" 2>/dev/null || true
+    chmod 755 "${DESTDIR}/opt/spotify/spotify" 2>/dev/null || true
 
     msg_normal "=== INSTALACIÓN COMPLETADA ===\n"
+}
 }
