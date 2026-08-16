@@ -1,9 +1,11 @@
+# Template file for 'spotify-bin'
 pkgname=spotify-bin
 version=1.2.92.147
 revision=1
 archs="x86_64"
 create_wrksrc=yes
-repository="nonfree"
+# repository="nonfree"
+# restricted=yes
 nostrip=yes
 short_desc="Spotify digital music streaming service"
 maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
