@@ -1,10 +1,10 @@
-# Template file for 'vscode-bin'
 pkgname=vscode-bin
 version=1.95.3
 revision=1
 archs="x86_64"
 create_wrksrc=yes
-metapackage=yes
+nostrip=yes
+nopie=yes
 hostmakedepends="bsdtar"
 depends="libXtst nss alsa-lib gtk+3 libsecret libnotify libXScrnSaver xdg-utils"
 short_desc="Visual Studio Code (official Microsoft binary)"
@@ -16,31 +16,34 @@ checksum=176286acb16b5bad1f0431947c3fb17813c5a84ee85a3395c7620379a4a70086
 
 repository=nonfree
 restricted=yes
-nostrip=yes
-nopie=yes
 
 do_extract() {
-	bsdtar -xf ${XBPS_SRCDISTDIR}/${pkgname}-${version}/vscode-${version}.deb
-	bsdtar -xf data.tar.* -C ${wrksrc}
+    bsdtar -xf ${XBPS_SRCDISTDIR}/${pkgname}-${version}/vscode-${version}.deb
+    bsdtar -xf data.tar.* -C ${wrksrc}
 }
 
 do_install() {
-	vmkdir usr/lib/code
-	vcopy usr/share/code/* usr/lib/code/
+    vmkdir usr/lib/code
+    vcopy usr/share/code/* usr/lib/code/
 
-	vmkdir usr/bin
-	ln -sf /usr/lib/code/bin/code ${DESTDIR}/usr/bin/code
+    vmkdir usr/bin
+    ln -sf /usr/lib/code/bin/code ${DESTDIR}/usr/bin/code
 
-	if [ -d usr/share/applications ]; then
-		vsed -i 's|/usr/share/code/code|/usr/lib/code/code|g' usr/share/applications/*.desktop
-		vcopy usr/share/applications usr/share/
-	fi
+    if [ -d usr/share/applications ]; then
+        vmkdir usr/share/applications
+        for f in usr/share/applications/*.desktop; do
+            if [ -f "$f" ]; then
+                vsed -i 's|/usr/share/code/code|/usr/lib/code/code|g' "$f"
+                vinstall "$f" 644 usr/share/applications
+            fi
+        done
+    fi
 
-	if [ -d usr/share/pixmaps ]; then
-		vcopy usr/share/pixmaps usr/share/
-	fi
+    if [ -d usr/share/pixmaps ]; then
+        vcopy usr/share/pixmaps usr/share/
+    fi
 
-	if [ -d usr/share/bash-completion ]; then
-		vcopy usr/share/bash-completion usr/share/
-	fi
+    if [ -d usr/share/bash-completion ]; then
+        vcopy usr/share/bash-completion usr/share/
+    fi
 }
