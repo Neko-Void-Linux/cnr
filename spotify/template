@@ -1,0 +1,80 @@
+pkgname=spotify
+version=1.2.92.147
+revision=1
+archs="x86_64"
+create_wrksrc=yes
+repository="nonfree"
+restricted=yes
+nostrip=yes
+nopie=yes
+noshlibprovides=yes
+hostmakedepends="bsdtar curl"
+depends="libcurl nss libXtst libXScrnSaver libxml2 libxslt libglvnd gtk+3
+ alsa-lib desktop-file-utils hicolor-icon-theme xdg-utils libnotify libgcrypt"
+short_desc="Spotify digital music streaming service"
+maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
+license="custom:Proprietary"
+homepage="https://www.spotify.com"
+
+do_fetch() {
+	local deb_dest="${XBPS_SRCDISTDIR}/${pkgname}-${version}/spotify.deb"
+
+	if [ -f "${deb_dest}" ]; then
+		return 0
+	fi
+
+	mkdir -p "${XBPS_SRCDISTDIR}/${pkgname}-${version}"
+
+	msg_normal "Obteniendo lista de paquetes del repositorio APT de Spotify...\n"
+	curl -sL -A "Mozilla/5.0" "https://repository.spotify.com/dists/stable/non-free/binary-amd64/Packages" -o Packages.tmp
+
+	local deb_file
+	deb_file=$(grep -A 10 "Package: spotify-client" Packages.tmp | grep "Filename:" | head -1 | awk '{print $2}')
+	rm -f Packages.tmp
+
+	if [ -z "${deb_file}" ]; then
+		msg_error "No se encontró el archivo .deb en el repositorio APT.\n"
+	fi
+
+	msg_normal "Descargando spotify-client...\n"
+	curl -fL -A "Mozilla/5.0" -o "${deb_dest}" "https://repository.spotify.com/${deb_file}"
+}
+
+do_extract() {
+	local deb_dest="${XBPS_SRCDISTDIR}/${pkgname}-${version}/spotify.deb"
+
+	bsdtar -xf "${deb_dest}"
+	bsdtar -xf data.tar.* -C "${wrksrc}"
+}
+
+do_install() {
+	# Ubicar cliente en /usr/lib/spotify (Estándar Void Linux)
+	vmkdir usr/lib
+	if [ -d usr/share/spotify ]; then
+		mv usr/share/spotify ${DESTDIR}/usr/lib/spotify
+	elif [ -d usr/lib/spotify ]; then
+		mv usr/lib/spotify ${DESTDIR}/usr/lib/
+	fi
+
+	# Copiar iconos del sistema
+	if [ -d ${DESTDIR}/usr/lib/spotify/icons ]; then
+		vmkdir usr/share/icons
+		vcopy ${DESTDIR}/usr/lib/spotify/icons/* usr/share/icons/
+	fi
+
+	# Mover y corregir lanzador .desktop
+	vmkdir usr/share/applications
+	if [ -f ${DESTDIR}/usr/lib/spotify/spotify.desktop ]; then
+		mv ${DESTDIR}/usr/lib/spotify/spotify.desktop ${DESTDIR}/usr/share/applications/
+	fi
+
+	if [ -f ${DESTDIR}/usr/share/applications/spotify.desktop ]; then
+		vsed -i 's|Exec=.*|Exec=spotify %U|' ${DESTDIR}/usr/share/applications/spotify.desktop
+		vsed -i 's|^Comment=.*|Comment=Cliente de reproducción de música en streaming|' ${DESTDIR}/usr/share/applications/spotify.desktop
+	fi
+
+	# Enlace simbólico ejecutable
+	vmkdir usr/bin
+	ln -sf /usr/lib/spotify/spotify ${DESTDIR}/usr/bin/spotify
+	chmod 755 ${DESTDIR}/usr/lib/spotify/spotify
+}
