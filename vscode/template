@@ -14,8 +14,8 @@ homepage="https://code.visualstudio.com"
 distfiles="https://update.code.visualstudio.com/${version}/linux-deb-x64/stable>vscode-${version}.deb"
 checksum=176286acb16b5bad1f0431947c3fb17813c5a84ee85a3395c7620379a4a70086
 
-repository=nonfree
-restricted=yes
+#repository="nonfree"
+#restricted=yes
 
 do_extract() {
     bsdtar -xf ${XBPS_SRCDISTDIR}/${pkgname}-${version}/vscode-${version}.deb
