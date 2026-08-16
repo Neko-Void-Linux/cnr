@@ -70,7 +70,7 @@ do_install() {
 
 	if [ -f ${DESTDIR}/usr/share/applications/spotify.desktop ]; then
 		vsed -i 's|Exec=.*|Exec=spotify %U|' ${DESTDIR}/usr/share/applications/spotify.desktop
-		vsed -i 's|^Comment=.*|Comment=Cliente de reproducción de música en streaming|' ${DESTDIR}/usr/share/applications/spotify.desktop
+		echo "Comment=Cliente de reproducción de música en streaming" >> ${DESTDIR}/usr/share/applications/spotify.desktop
 	fi
 
 	# Enlace simbólico ejecutable
