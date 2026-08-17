@@ -17,28 +17,28 @@ nostrip=yes
 shlib_provides="libc.so libc++_shared.so libc.musl-x86_64.so.1 libdl.so liblog.so libm.so"
 
 do_extract() {
-	bsdtar -xf ${XBPS_SRCDISTDIR}/${pkgname}-${version}/hydralauncher_${version}_amd64.deb
-	bsdtar -xf data.tar.* -C ${wrksrc}
+    bsdtar -xf ${XBPS_SRCDISTDIR}/${pkgname}-${version}/hydralauncher_${version}_amd64.deb
+    bsdtar -xf data.tar.* -C ${wrksrc}
 }
 
 do_install() {
-	vmkdir opt
-	vmkdir usr/bin
-	vmkdir usr/share
+    vmkdir opt
+    vmkdir usr/bin
+    vmkdir usr/share
 
-	if [ -d opt/Hydra ]; then
-		vcopy opt/Hydra opt/
-		ln -s /opt/Hydra/hydralauncher ${DESTDIR}/usr/bin/hydra-launcher
-	fi
+    if [ -d opt/Hydra ]; then
+        vcopy opt/Hydra opt/
+        ln -s /opt/Hydra/hydralauncher ${DESTDIR}/usr/bin/hydra-launcher
+    fi
 
-	if [ -d usr/share/applications ]; then
-		vcopy usr/share/applications usr/share/
-	fi
+    if [ -d usr/share/applications ]; then
+        vcopy usr/share/applications usr/share/
+    fi
 
-	if [ -d usr/share/icons ]; then
-		vcopy usr/share/icons usr/share/
-	fi
+    if [ -d usr/share/icons ]; then
+        vcopy usr/share/icons usr/share/
+    fi
 
-	find ${DESTDIR}/opt/Hydra -type d \( -name "*musl*" -o -name "*android*" -o -name "*arm*" \) -exec rm -rf {} +
-	find ${DESTDIR}/opt/Hydra -type f \( -name "*musl*" -o -name "*android*" -o -name "*arm*" \) -delete
+    find ${DESTDIR}/opt/Hydra -type d \( -name "*musl*" -o -name "*android*" -o -name "*arm*" \) -exec rm -rf {} +
+    find ${DESTDIR}/opt/Hydra -type f \( -name "*musl*" -o -name "*android*" -o -name "*arm*" \) -delete
 }
