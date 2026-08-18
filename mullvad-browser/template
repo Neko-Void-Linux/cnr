@@ -1,0 +1,28 @@
+# Template file for 'mullvad-browser'
+pkgname=mullvad-browser
+version=15.0.20
+revision=1
+archs="x86_64"
+create_wrksrc=no
+nopie=yes
+nostrip=yes
+hostmakedepends="bsdtar"
+depends="gtk+3 dbus-glib libXtst libXScrnSaver nss alsa-lib libgbm libdrm"
+short_desc="Privacy-focused browser by Mullvad and Tor Project"
+maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
+license="MPL-2.0"
+homepage="https://mullvad.net/browser"
+distfiles="https://github.com/mullvad/mullvad-browser/releases/download/${version}/mullvad-browser_${version}-1_amd64.deb"
+checksum=5bdb728155f41fc56a152065c8d9d27841f1a88b45909b2c2a9d33f633b82304
+
+do_extract() {
+    mkdir -p ${wrksrc}
+    bsdtar -xf ${XBPS_SRCDISTDIR}/${pkgname}-${version}/mullvad-browser_${version}-1_amd64.deb -C ${wrksrc}
+    bsdtar -xf ${wrksrc}/data.tar.xz -C ${wrksrc}
+}
+
+do_install() {
+    vmkdir usr
+    cp -a ${wrksrc}/usr/* ${DESTDIR}/usr/
+    chmod -R 755 ${DESTDIR}/usr
+}
