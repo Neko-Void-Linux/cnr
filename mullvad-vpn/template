@@ -13,7 +13,7 @@ maintainer="ANOMALI0x00 y JavierC"
 license="GPL-3.0-only"
 homepage="https://mullvad.net"
 distfiles="https://cdn.mullvad.net/app/desktop/releases/${version}/MullvadVPN-${version}_amd64.deb"
-checksum=97ab96acecccce7f1b179899cdf6bfc5f7cb22f00fb0268bc337113d15b7b74a
+checksum=38c6ee73ae80870688560922a28525b6d0dacc62c2e410938863d7038e931aca
 
 do_extract() {
     ar x "${XBPS_SRCDISTDIR}/${pkgname}-${version}/MullvadVPN-${version}_amd64.deb"
