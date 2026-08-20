@@ -1,0 +1,20 @@
+# Template file for 'noctalia'
+pkgname=noctalia
+version=5.8.0
+revision=8
+build_style=meson
+configure_args="-Dnative_optimizations=false -Db_sanitize=none"
+hostmakedepends="pkg-config git cmake wayland-devel wayland-protocols"
+makedepends="wayland-devel wayland-protocols libepoxy-devel MesaLib-devel libglvnd-devel
+ cairo-devel pango-devel fontconfig-devel freetype-devel harfbuzz-devel
+ libxkbcommon-devel pipewire-devel libcurl-devel pam-devel libwebp-devel
+ basu-devel sdbus-c++-devel polkit-devel librsvg-devel libqalculate-devel
+ libxml2-devel jemalloc-devel wireplumber-devel
+ libsecret-devel libsodium-devel libmd4c-devel json-c++ tomlplusplus-devel stb"
+short_desc="Noctalia - Wayland compositor and desktop environment"
+maintainer="JavierC"
+license="MIT"
+homepage="https://github.com/noctalia-dev/noctalia"
+distfiles="https://github.com/javiercplus/noctalia/releases/download/5.8/noctalia-5.8.tar.gz"
+checksum="0ff94536b8eaa54d35228be9b19acd84ee49a4b5b8526adfab23bb0b4e818cc9"
+patches="disable-native-optimizations.patch"
