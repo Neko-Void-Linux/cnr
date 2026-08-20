@@ -5,7 +5,7 @@ revision=8
 build_style=meson
 configure_args="-Dnative_optimizations=false -Db_sanitize=none"
 hostmakedepends="pkg-config git cmake wayland-devel wayland-protocols"
-makedepends="wayland-devel wayland-protocols libepoxy-devel MesaLib-devel libglvnd-devel
+makedepends="wayland-devel wayland-protocols libepoxy-devel libical-devel MesaLib-devel libglvnd-devel
  cairo-devel pango-devel fontconfig-devel freetype-devel harfbuzz-devel
  libxkbcommon-devel pipewire-devel libcurl-devel pam-devel libwebp-devel
  basu-devel sdbus-c++-devel polkit-devel librsvg-devel libqalculate-devel
