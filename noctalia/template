@@ -5,12 +5,13 @@ revision=8
 build_style=meson
 configure_args="-Dnative_optimizations=false -Db_sanitize=none"
 hostmakedepends="pkg-config git cmake wayland-devel wayland-protocols"
-makedepends="wayland-devel wayland-protocols libepoxy-devel libical-devel MesaLib-devel libglvnd-devel
- cairo-devel pango-devel fontconfig-devel freetype-devel harfbuzz-devel
- libxkbcommon-devel pipewire-devel libcurl-devel pam-devel libwebp-devel
- basu-devel sdbus-c++-devel polkit-devel librsvg-devel libqalculate-devel
- libxml2-devel jemalloc-devel wireplumber-devel
- libsecret-devel libsodium-devel libmd4c-devel json-c++ tomlplusplus-devel libjxl-devel stb"
+makedepends="base-devel cairo-devel fontconfig-devel freetype-devel harfbuzz-devel
+	jemalloc-devel json-c++ libcurl-devel libepoxy-devel libglvnd-devel libmd4c-devel
+	libqalculate-devel librsvg-devel libsodium-devel libwebp-devel libxkbcommon-devel
+	libxml2-devel libsecret-devel libjxl-devel MesaLib-devel pam-devel pango-devel
+	libsndfile-devel pipewire-devel polkit-devel sdbus-c++-devel stb tomlplusplus-devel
+	libical-devel wayland-devel wayland-protocols wireplumber-devel"
+short_desc="Noctalia desktop shell"
 short_desc="Noctalia - Wayland compositor and desktop environment"
 maintainer="JavierC"
 license="MIT"
