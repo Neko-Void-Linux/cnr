@@ -1,6 +1,6 @@
 # Template file for 'noctalia'
 pkgname=noctalia
-version=5.8.0
+version=5.9
 revision=8
 build_style=meson
 configure_args="-Dnative_optimizations=false -Db_sanitize=none"
@@ -16,6 +16,6 @@ short_desc="Noctalia - Wayland compositor and desktop environment"
 maintainer="JavierC"
 license="MIT"
 homepage="https://github.com/noctalia-dev/noctalia"
-distfiles="https://github.com/javiercplus/noctalia/releases/download/5.8/noctalia-5.8.tar.gz"
-checksum="0ff94536b8eaa54d35228be9b19acd84ee49a4b5b8526adfab23bb0b4e818cc9"
+distfiles="https://github.com/javiercplus/noctalia/releases/download/5.9/noctalia-main.tar.gz"
+checksum="526322e46bdf8724f09c78e6e6dd8e64430b7a9aeb243286def0d20e32e07a9f"
 patches="disable-native-optimizations.patch"
