@@ -1,7 +1,7 @@
 # Template file for 'hytale-installer' — fuente: https://github.com/SrDicov/Hytale-Installer
 pkgname=hytale-installer
 version=0.1.1
-revision=1
+revision=2
 archs="x86_64"
 wrksrc="Hytale-Installer-${version}"
 build_style=fetch
