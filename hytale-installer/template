@@ -1,0 +1,42 @@
+# Template file for 'hytale-installer' — fuente: https://github.com/SrDicov/Hytale-Installer
+pkgname=hytale-installer
+version=0.1.0
+revision=3
+archs="x86_64"
+wrksrc="Hytale-Installer-${version}"
+build_style=fetch
+short_desc="Free GPL-3 wrapper that downloads, updates and launches the official Hytale launcher"
+maintainer="Dicov <srdicov@gmail.com>"
+license="GPL-3.0-or-later"
+homepage="https://github.com/SrDicov/Hytale-Installer"
+# Código fuente del wrapper (GPL-3); el binario propietario se descarga en runtime.
+# Icono "H" oficial © Hypixel Studios incluido solo para identificación.
+distfiles="https://github.com/SrDicov/Hytale-Installer/archive/refs/tags/v${version}.tar.gz>hytale-installer-${version}.tar.gz"
+checksum=68d2600143166317ffff0bb40a4ff554450fc68f959e6c8f9a5c8f454039ad65
+# ^— se rellena tras el primer push: curl -L <url> | sha256sum  (ver packaging/void/update-checksum.sh)
+
+# Dependencias runtime del launcher oficial (webkit2gtk-4.1 + soup3) + herramientas del wrapper.
+# Primera ejecución 100% lista en Void; el script nunca usa sudo, solo avisa.
+depends="bash curl unzip ca-certificates
+ gtk+3 libwebkit2gtk41 libsoup3 gdk-pixbuf glib glib-networking
+ gsettings-desktop-schemas xdg-utils hicolor-icon-theme"
+
+do_extract() {
+	# GitHub archive → Hytale-Installer-v${version} pero wrksrc sin 'v'
+	# fetch style ya descargó el tarball a SRCDISTDIR; lo descomprimimos
+	# manualmente con strip-components=1 al wrksrc correcto.
+	mkdir -p "${wrksrc}"
+	bsdtar -xf "${XBPS_SRCDISTDIR}/${pkgname}-${version}/hytale-installer-${version}.tar.gz" \
+		-C "${wrksrc}" --strip-components=1
+}
+
+do_install() {
+	vbin hytale-installer
+	vinstall hytale-installer.desktop 0644 usr/share/applications
+	for size in 24 32 48 64 128 256 512; do
+		vinstall icons/${size}x${size}/apps/hytale-installer.png \
+			0644 usr/share/icons/hicolor/${size}x${size}/apps hytale-installer.png
+	done
+	vlicense LICENSE
+	vlicense NOTICE
+}
