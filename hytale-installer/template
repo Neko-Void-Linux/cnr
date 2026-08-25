@@ -1,7 +1,7 @@
 # Template file for 'hytale-installer' — fuente: https://github.com/SrDicov/Hytale-Installer
 pkgname=hytale-installer
-version=0.1.1
-revision=2
+version=0.1.2
+revision=1
 archs="x86_64"
 wrksrc="Hytale-Installer-${version}"
 build_style=fetch
@@ -12,7 +12,7 @@ homepage="https://github.com/SrDicov/Hytale-Installer"
 # Código fuente del wrapper (GPL-3); el binario propietario se descarga en runtime.
 # Icono "H" oficial © Hypixel Studios incluido solo para identificación.
 distfiles="https://github.com/SrDicov/Hytale-Installer/archive/refs/tags/v${version}.tar.gz>hytale-installer-${version}.tar.gz"
-checksum=e3d252703b609c482a210fa9551a59e2713ef6636b6e7816bedb9153f7a22f2b
+checksum=2f22ac52eabe8be958f434cf5b1cbb193a6e3dad6e9b361e66e2a022aa343fd2
 
 # Dependencias runtime del launcher oficial (webkit2gtk-4.1 + soup3) + herramientas del wrapper.
 # Primera ejecución 100% lista en Void; el script nunca usa sudo, solo avisa.
