@@ -1,0 +1,23 @@
+case "$ACTION" in
+post)
+	echo "hytale-installer: purgando datos de usuario (wrapper + Hytale)..."
+	for home in $(getent passwd | awk -F: '$3>=1000 || $1=="root" {print $6}'); do
+		[ -d "$home" ] || continue
+		case "$home" in /home/*|/root) ;; *) continue;; esac
+		for p in \
+			"$home/.local/share/hytale-installer" \
+			"$home/.cache/hytale-installer" \
+			"$home/.local/share/Hytale" \
+			"$home/.cache/Hytale" \
+			"$home/.config/Hytale" \
+			"$home/.local/share/hytale-launcher"; do
+			[ -e "$p" ] || continue
+			case "$p" in "$home"|"$home/"|"/"|"") continue;; esac
+			rm -rf -- "$p" 2>/dev/null && echo "  borrado $p" || echo "  aviso: no se pudo borrar $p" >&2
+		done
+	done
+	rm -f /tmp/hytale-installer-*.lock 2>/dev/null || true
+	rm -rf -- "${XDG_CACHE_HOME:-/root/.cache}/hytale-installer" 2>/dev/null || true
+	echo "hytale-installer: purga completada."
+	;;
+esac
