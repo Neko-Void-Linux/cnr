@@ -1,0 +1,87 @@
+pkgname=antigravity-bin
+version=2.11.0
+revision=1
+_build_id=6376446768316416
+archs="x86_64"
+depends="gtk+3 glib nss alsa-lib libXScrnSaver libXtst libxcb libxkbcommon"
+short_desc="Cliente de la aplicación Antigravity Hub"
+maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
+license="custom:Proprietary"
+homepage="https://storage.googleapis.com/antigravity-public"
+distfiles="https://storage.googleapis.com/antigravity-public/antigravity-hub/${version}-${_build_id}/linux-x64/Antigravity.tar.gz"
+checksum=43b1e257fd2614ddb9a5a578b03f8ac391f6579b3b06283abe15964157f65129
+
+nostrip=yes
+
+do_configure() { :; }
+do_build() { :; }
+
+do_install() {
+    cd "$wrksrc" || exit 1
+
+    if [ -d "Antigravity" ]; then
+        cd Antigravity || exit 1
+    fi
+
+    vmkdir usr/lib/antigravity
+    vcopy . usr/lib/antigravity/
+
+    local binary_name=""
+    local binary_path=""
+    for name in "antigravity" "Antigravity" "antigravity-hub" "AntigravityHub" "antigravity-bin"; do
+        if [ -f "${DESTDIR}/usr/lib/antigravity/${name}" ]; then
+            binary_name="$name"
+            binary_path="${DESTDIR}/usr/lib/antigravity/${name}"
+            break
+        fi
+    done
+
+    if [ -z "$binary_name" ]; then
+        binary_path=$(find "${DESTDIR}/usr/lib/antigravity" -maxdepth 1 -type f -executable | head -n1)
+        if [ -n "$binary_path" ]; then
+            binary_name=$(basename "$binary_path")
+        fi
+    fi
+
+    if [ -z "$binary_name" ]; then
+        echo "ERROR: No se encontró ejecutable."
+        exit 1
+    fi
+
+    chmod 755 "$binary_path"
+
+    if [ -f "${DESTDIR}/usr/lib/antigravity/chrome-sandbox" ]; then
+        chmod 4755 "${DESTDIR}/usr/lib/antigravity/chrome-sandbox"
+    fi
+
+    vmkdir usr/bin
+    ln -sf "/usr/lib/antigravity/${binary_name}" "${DESTDIR}/usr/bin/antigravity"
+
+    local icon_ref="applications-utilities"
+    if [ -f "${FILESDIR}/antigravity.svg" ]; then
+        vmkdir usr/share/pixmaps
+        vcopy "${FILESDIR}/antigravity.svg" usr/share/pixmaps/antigravity.svg
+        vmkdir usr/share/icons/hicolor/scalable/apps
+        vcopy "${FILESDIR}/antigravity.svg" usr/share/icons/hicolor/scalable/apps/antigravity.svg
+        icon_ref="/usr/share/pixmaps/antigravity.svg"
+    elif [ -f "${FILESDIR}/antigravity.png" ]; then
+        vmkdir usr/share/pixmaps
+        vcopy "${FILESDIR}/antigravity.png" usr/share/pixmaps/antigravity.png
+        vmkdir usr/share/icons/hicolor/256x256/apps
+        vcopy "${FILESDIR}/antigravity.png" usr/share/icons/hicolor/256x256/apps/antigravity.png
+        icon_ref="/usr/share/pixmaps/antigravity.png"
+    fi
+
+    vmkdir usr/share/applications
+    cat > "${DESTDIR}/usr/share/applications/antigravity.desktop" <<EOF
+[Desktop Entry]
+Name=Antigravity
+Comment=Cliente Antigravity
+Exec=antigravity %U
+Icon=${icon_ref}
+Terminal=false
+Type=Application
+Categories=Development;Utility;
+StartupWMClass=Antigravity
+EOF
+}
