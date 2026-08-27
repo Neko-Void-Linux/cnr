@@ -1,71 +1,79 @@
 pkgname=vscode-bin
-version=1.95.3
-revision=1
+version=1.96.4
+revision=2
 archs="x86_64"
 create_wrksrc=yes
-#repository="nonfree"
-#restricted=yes
 nostrip=yes
 nopie=yes
 noshlibprovides=yes
-hostmakedepends="bsdtar"
+hostmakedepends="tar"
 depends="libXtst nss alsa-lib gtk+3 libsecret libnotify libXScrnSaver xdg-utils desktop-file-utils"
 short_desc="Visual Studio Code (official Microsoft binary release)"
 maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
 license="custom:Unfree"
 homepage="https://code.visualstudio.com"
-distfiles="https://update.code.visualstudio.com/${version}/linux-x64/stable>vscode-${version}.tar.gz"
-checksum=881c6dce9f9b18bdeaa0020197501be3808c6e23c26baa0ba905b0bc84175b46
+distfiles="https://vscode.download.prss.microsoft.com/dbazure/download/stable/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/code-stable-x64-1787668990.tar.gz"
+checksum=470f281e9d75f03b1b957f38e193580140de3b1d9c9ba6db13e7bf30aead4e00
 
 do_extract() {
-	bsdtar -xf ${XBPS_SRCDISTDIR}/${pkgname}-${version}/vscode-${version}.tar.gz -C ${wrksrc} --strip-components=1
+    tar -xf "${XBPS_SRCDISTDIR}/${pkgname}-${version}/code-stable-x64-1787668990.tar.gz" -C "${wrksrc}" --strip-components=1
 }
 
 do_install() {
-	vmkdir usr/lib/code
-	vcopy "*" usr/lib/code/
+    vmkdir usr/lib/code
+    vcopy "*" usr/lib/code/
 
-	vmkdir usr/bin
-	ln -sf /usr/lib/code/bin/code ${DESTDIR}/usr/bin/code
+    if [ -f "${DESTDIR}/usr/lib/code/chrome-sandbox" ]; then
+        chmod 4755 "${DESTDIR}/usr/lib/code/chrome-sandbox"
+    fi
 
-	vmkdir usr/share/applications
-	cat <<-'EOF' > ${DESTDIR}/usr/share/applications/code.desktop
-	[Desktop Entry]
-	Name=Visual Studio Code
-	Comment=Code Editing. Redefined.
-	GenericName=Text Editor
-	Exec=/usr/lib/code/bin/code --unity-launch %F
-	Icon=vscode
-	Type=Application
-	StartupNotify=false
-	StartupWMClass=Code
-	Categories=Utility;TextEditor;Development;IDE;
-	MimeType=text/plain;inode/directory;application/x-code-workspace;
-	Actions=new-empty-window;
-	Keywords=vscode;
+    vmkdir usr/bin
+    ln -sf /usr/lib/code/bin/code "${DESTDIR}/usr/bin/code"
 
-	[Desktop Action new-empty-window]
-	Name=New Empty Window
-	Exec=/usr/lib/code/bin/code --new-window %F
-	Icon=vscode
-	EOF
+    local icon_src="${DESTDIR}/usr/lib/code/resources/app/resources/linux/code.png"
+    if [ -f "$icon_src" ]; then
+        vmkdir usr/share/pixmaps
+        vcopy "$icon_src" usr/share/pixmaps/vscode.png
+    else
+        vmkdir usr/share/pixmaps
+        ln -sf /usr/lib/code/resources/app/resources/linux/code.png "${DESTDIR}/usr/share/pixmaps/vscode.png"
+    fi
 
-	cat <<-'EOF' > ${DESTDIR}/usr/share/applications/code-url-handler.desktop
-	[Desktop Entry]
-	Name=Visual Studio Code - URL Handler
-	Comment=Code Editing. Redefined.
-	GenericName=Text Editor
-	Exec=/usr/lib/code/bin/code --open-url %U
-	Icon=vscode
-	Type=Application
-	NoDisplay=true
-	StartupNotify=false
-	StartupWMClass=Code
-	Categories=Utility;TextEditor;Development;IDE;
-	MimeType=x-scheme-handler/vscode;
-	Keywords=vscode;
-	EOF
+    vmkdir usr/share/applications
+    cat > "${DESTDIR}/usr/share/applications/code.desktop" <<-'EOF'
+[Desktop Entry]
+Name=Visual Studio Code
+Comment=Code Editing. Redefined.
+GenericName=Text Editor
+Exec=/usr/lib/code/bin/code --password-store="gnome-libsecret" --unity-launch %F
+Icon=vscode
+Type=Application
+StartupNotify=false
+StartupWMClass=Code
+Categories=Utility;TextEditor;Development;IDE;
+MimeType=text/plain;inode/directory;application/x-code-workspace;
+Actions=new-empty-window;
+Keywords=vscode;
 
-	vmkdir usr/share/pixmaps
-	ln -sf /usr/lib/code/resources/app/resources/linux/code.png ${DESTDIR}/usr/share/pixmaps/vscode.png
+[Desktop Action new-empty-window]
+Name=New Empty Window
+Exec=/usr/lib/code/bin/code --password-store="gnome-libsecret" --new-window %F
+Icon=vscode
+EOF
+
+    cat > "${DESTDIR}/usr/share/applications/code-url-handler.desktop" <<-'EOF'
+[Desktop Entry]
+Name=Visual Studio Code - URL Handler
+Comment=Code Editing. Redefined.
+GenericName=Text Editor
+Exec=/usr/lib/code/bin/code --password-store="gnome-libsecret" --open-url %U
+Icon=vscode
+Type=Application
+NoDisplay=true
+StartupNotify=false
+StartupWMClass=Code
+Categories=Utility;TextEditor;Development;IDE;
+MimeType=x-scheme-handler/vscode;
+Keywords=vscode;
+EOF
 }
