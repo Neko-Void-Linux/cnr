@@ -1,0 +1,21 @@
+pkgname=opencode-bin
+version=1.18.25
+revision=1
+archs="x86_64"
+short_desc="The AI coding agent built for the terminal."
+maintainer="Soanvig <soanvig@gmail.com>"
+license="MIT"
+homepage="https://opencode.ai"
+distfiles="https://github.com/anomalyco/opencode/releases/download/v${version}/opencode-linux-x64.tar.gz>opencode-bin_${version}_x86_64.tar.gz"
+checksum=58a3729a6f3432dd6d2917fcc4a949788891a035818646ad480e12c947f56e78
+hostmakedepends="tar"
+depends="ripgrep"
+
+do_extract() {
+	tar -xf "${XBPS_SRCDISTDIR}/${pkgname}-${version}/opencode-bin_${version}_x86_64.tar.gz" -C "${wrksrc}"
+}
+
+do_install() {
+	vmkdir usr/bin
+	vinstall opencode 755 usr/bin/opencode
+}
