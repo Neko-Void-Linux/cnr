@@ -2,7 +2,6 @@
 pkgname=zerotierone
 version=1.16.2
 revision=1
-build_style=none
 hostmakedepends="pkg-config gcc make git"
 makedepends="openssl-devel libffi-devel rust cargo linux-headers"
 depends=""
