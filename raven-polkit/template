@@ -1,0 +1,13 @@
+# Template file for 'raven-polkit'
+pkgname=raven-polkit
+version=0.1.4
+revision=1
+build_style=gnu-makefile
+hostmakedepends="pkg-config"
+makedepends="gtk+3-devel dbus-devel polkit-devel"
+short_desc="Minimalist, pure-C PolicyKit authentication agent"
+maintainer="JavierC"
+license="GPL 3.0"
+homepage="https://github.com/Neko-Void-Linux/raven-polkit"
+distfiles="https://github.com/Neko-Void-Linux/raven-polkit/releases/download/${version}/${pkgname}-${version}.tar.gz"
+checksum=34bae5799ea3103a4c34dc4737b72256ddcb73bac50b25717de997d2106a937b
