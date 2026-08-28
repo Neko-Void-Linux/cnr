@@ -1,0 +1,56 @@
+# Template file for falcond
+# Build with: xbps-src pkg falcond
+
+pkgname=falcond
+version=2.0.14
+revision=9
+archs="x86_64*"
+build_style=none
+hostmakedepends="zig-nk git"
+depends="dbus scx"
+short_desc="Advanced Linux Gaming Performance Daemon"
+maintainer="JavierC"
+license="MIT"
+homepage="https://github.com/PikaOS-Linux/falcond"
+distfiles="https://github.com/Neko-Void-Linux/falcond/releases/download/2.0.14/falcond-2.0.14.tar.gz"
+checksum=cb13918088ef42cb57e452552046fa265ca9fc08184550226f283725b944f984
+nopie=yes
+
+post_extract() {
+    # post_extract se ejecuta en ${wrksrc} = falcond-wd-2.0.8/
+
+    # Clonar perfiles dentro de la subcarpeta falcond/
+    git clone --depth 1 https://github.com/PikaOS-Linux/falcond-profiles.git falcond/profiles
+
+}
+
+do_build() {
+    # El build.zig está en falcond/, no en la raíz del tarball
+    cd falcond
+    zig build -Doptimize=ReleaseFast -Dcpu=baseline
+}
+
+do_install() {
+    cd falcond
+
+    # Instalar binario
+    vbin zig-out/bin/falcond
+
+    # Instalar perfiles
+    vmkdir usr/share/falcond
+    cp -r profiles/usr/share/falcond/* ${DESTDIR}/usr/share/falcond/
+
+    # Instalar servicio runit
+    vmkdir etc/sv/falcond
+    cat << 'EOF' > ${DESTDIR}/etc/sv/falcond/run
+#!/bin/sh
+exec falcond
+EOF
+    chmod 755 ${DESTDIR}/etc/sv/falcond/run
+
+    # Directorio de estado
+    vmkdir var/lib/falcond
+
+    # Licencia (está en la raíz del repo, un nivel arriba)
+    [ -f ../LICENSE ] && vlicense ../LICENSE
+}
