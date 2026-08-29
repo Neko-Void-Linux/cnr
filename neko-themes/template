@@ -2,7 +2,7 @@
 pkgname=neko-themes
 version=6.5
 revision=1
-archs=x86_64
+noarch=yes
 wrksrc="neko-themes"
 short_desc="Colección de temas"
 maintainer="JavierC"

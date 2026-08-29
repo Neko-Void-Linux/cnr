@@ -1,5 +1,5 @@
 # Template file for 'heroic-games-launcher-bin'
-pkgname=heroic-games
+pkgname=heroic-games-bin
 version=2.22.0
 revision=1
 archs="x86_64"

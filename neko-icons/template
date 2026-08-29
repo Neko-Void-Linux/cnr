@@ -2,7 +2,7 @@
 pkgname=neko-icons
 version=6.5
 revision=1
-archs=x86_64
+noarch=yes
 wrksrc="neko-icons"
 short_desc="Colección de iconos Neko"
 maintainer="JavierC"

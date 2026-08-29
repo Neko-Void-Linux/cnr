@@ -1,5 +1,5 @@
 # Template file for 'waterfox'
-pkgname=waterfox
+pkgname=waterfox-bin
 version=6.6.14
 revision=1
 archs="x86_64"

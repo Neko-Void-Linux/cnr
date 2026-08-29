@@ -2,7 +2,7 @@
 pkgname=neko-backgrounds
 version=6.9
 revision=1
-archs=x86_64
+noarch=yes
 wrksrc="neko-backgrounds"
 short_desc="Colección de fondos de pantalla Neko"
 maintainer="JavierC"

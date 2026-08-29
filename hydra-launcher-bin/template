@@ -1,4 +1,4 @@
-pkgname=hydra-launcher
+pkgname=hydra-launcher-bin
 version=4.1.2
 revision=1
 archs="x86_64"

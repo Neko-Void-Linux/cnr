@@ -1,4 +1,4 @@
-pkgname=spotify
+pkgname=spotify-bin
 version=1.2.92.147
 revision=1
 archs="x86_64"

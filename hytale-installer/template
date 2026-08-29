@@ -2,7 +2,7 @@
 pkgname=hytale-installer
 version=0.1.2
 revision=1
-archs="x86_64"
+noarch=yes
 wrksrc="Hytale-Installer-${version}"
 build_style=fetch
 short_desc="Free GPL-3 wrapper that downloads, updates and launches the official Hytale launcher"

@@ -1,5 +1,5 @@
 # Template file for 'mullvad-vpn'
-pkgname=mullvad-vpn
+pkgname=mullvad-vpn-bin
 version=2026.3
 revision=1
 archs="x86_64"

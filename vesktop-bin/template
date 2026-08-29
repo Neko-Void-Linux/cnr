@@ -1,4 +1,4 @@
-pkgname=vesktop
+pkgname=vesktop-bin
 version=1.6.7
 revision=1
 archs="x86_64"
