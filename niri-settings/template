@@ -2,7 +2,7 @@
 pkgname=niri-settings
 version=2026
 revision=1
-depends="python3-PyQt6 qt6-wayland"
+depends="python3-pyqt6 qt6-wayland"
 short_desc="Configuration GUI for niri (Wayland compositor)"
 maintainer="JavierC"
 license="GPL-V2" 
