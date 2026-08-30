@@ -1,7 +1,7 @@
 # Template file for 'niri-settings'
 pkgname=niri-settings
 version=2026
-revision=3
+revision=4
 depends="niri python3-pyqt6 python3-pyqt6-gui python3-pyqt6-widgets qt6-wayland"
 short_desc="Configuration GUI for niri (Wayland compositor)"
 maintainer="JavierC"
