@@ -1,0 +1,29 @@
+# Template file for 'niri-settings'
+pkgname=niri-settings
+version=2026
+revision=1
+depends="python3-PyQt6 qt6-wayland"
+short_desc="Configuration GUI for niri (Wayland compositor)"
+maintainer="JavierC"
+license="GPL-V2" 
+homepage="https://github.com/stefonarch/niri-settings"
+distfiles="https://github.com/Neko-Void-Linux/niri-settings/releases/download/${version}/${pkgname}-${version}.tar.gz"
+checksum=616d763fea8657ae2b922f2f75cd7d2bc708c9fcccfcfdf1413e4b60c8c51692
+
+do_install() {
+	# Instalar el binario ejecutable
+	vbin niri-settings
+
+	# Instalar el archivo .desktop y el ícono
+	vinstall niri-settings.desktop 644 usr/share/applications
+	vinstall niri-settings.svg 644 usr/share/icons/hicolor/scalable/apps
+
+	# Instalar los archivos de Python
+	vmkdir usr/lib/niri-settings
+	vinstall niri_settings.py 644 usr/lib/niri-settings
+	vcopy ui usr/lib/niri-settings
+
+	# Instalar las traducciones
+	vmkdir usr/share/niri-settings
+	vcopy translations usr/share/niri-settings
+}
