@@ -8,7 +8,7 @@ maintainer="JavierC <tu@email.com>"
 license="Proprietary"
 homepage="https://mullvad.net"
 distfiles="https://github.com/mullvad/mullvadvpn-app/releases/download/${version}/MullvadVPN-${version}_amd64.deb"
-checksum=38c6ee73ae80870688560922a28525b6d0dacc62c2e410938863d7038e931aca
+checksum=f1d758079e1dc90fff0c8d48256599b717e1de9879682c861a6776851c59453b
 hostmakedepends="binutils tar xz curl gnupg2"  # binutils para ar, tar/xz para extraer
 depends="wireguard-tools"
 
