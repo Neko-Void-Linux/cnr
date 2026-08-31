@@ -1,0 +1,31 @@
+# Template file for 'libva-intel-driver-irql'
+pkgname=libva-intel-driver-irql
+version=2.4.5
+revision=1
+archs="x86_64"
+wrksrc="intel-vaapi-driver-0b648be50cd80e16469c135c76ff61bbd2f2d12b"
+build_style=meson
+conflicts="libva-intel-driver"
+provides="libva-intel-driver-${version}_1"
+replaces="libva-intel-driver"
+hostmakedepends="pkg-config python2"
+makedepends="libva-devel libdrm-devel libva-devel libdrm-devel libX11-devel"
+depends="libva libdrm"
+short_desc="VA-API implementation for Intel G45 and HD Graphics family (IRQL fork)"
+maintainer="Kevin <kevinzz@tutamail.com>"
+license="MIT"
+homepage="https://github.com/irql-notlessorequal/intel-vaapi-driver"
+distfiles="https://github.com/irql-notlessorequal/intel-vaapi-driver/archive/0b648be50cd80e16469c135c76ff61bbd2f2d12b.tar.gz"
+checksum="5f619b42ae3f7db887d6d04cd012f009137e8b20f7eaea865c92199b061ca135"
+
+post_patch() {
+    sed -i '1s/python$/&2/' src/shaders/gpp.py
+}
+
+pre_configure() {
+    export CFLAGS+=" -fcommon"
+}
+
+post_install() {
+    vlicense LICENSE
+}
