@@ -2,9 +2,7 @@
 pkgname=ly
 version=1.5.0.1
 revision=1
-build_style=zig-build # must be >= zig-0.16.0
-configure_args="installexe -Ddest_directory=zig-out -Dinit_system=runit"
-hostmakedepends="pkg-config"
+hostmakedepends="pkg-config zig-nk"
 makedepends="libxcb-devel pam-devel"
 depends="brightnessctl xauth"
 short_desc="Lightweight TUI display manager"
@@ -22,18 +20,27 @@ conf_files="
 "
 
 pre_build() {
-	# workaround for Zig path resolution where an empty sysroot
-	# causes lib paths (like /usr/lib) to lose leading slash
-	if [ -z "$CROSS_BUILD" ]; then
-		export XBPS_CROSS_BASE="/"
-	fi
+    # workaround for Zig path resolution where an empty sysroot
+    # causes lib paths (like /usr/lib) to lose leading slash
+    if [ -z "$CROSS_BUILD" ]; then
+        export XBPS_CROSS_BASE="/"
+    fi
 }
 
 post_patch() {
-	vsed -i build.zig -e '/zig-out\/bin\/ly/d'
-	vsed -i build.zig -e '/b.installArtifact(exe);/i \    exe.pie = true;'
+    vsed -i build.zig -e '/zig-out\/bin\/ly/d'
+    vsed -i build.zig -e '/b.installArtifact(exe);/i \    exe.pie = true;'
+}
+
+do_build() {
+    zig build installexe -Ddest_directory=zig-out -Dinit_system=runit
+}
+
+do_install() {
+    # Copiamos la estructura generada directamente al destino
+    cp -a zig-out/* ${DESTDIR}/
 }
 
 post_install() {
-	vlicense license.md
+    vlicense license.md
 }
