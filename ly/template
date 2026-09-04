@@ -1,7 +1,7 @@
 # Template file for 'ly'
 pkgname=ly
 version=1.5.0.1
-revision=1
+revision=15
 hostmakedepends="pkg-config zig-nk"
 makedepends="libxcb-devel pam-devel"
 depends="brightnessctl xauth"
@@ -37,8 +37,20 @@ do_build() {
 }
 
 do_install() {
-    # Copiamos la estructura generada directamente al destino
-    cp -a zig-out/* ${DESTDIR}/
+    # Void requiere que el binario esté en /usr/bin. Usamos `vbin`
+    # que crea las rutas necesarias e instala el ejecutable correctamente.
+    if [ -f zig-out/usr/bin/ly ]; then
+        vbin zig-out/usr/bin/ly
+    elif [ -f zig-out/bin/ly ]; then
+        vbin zig-out/bin/ly
+    fi
+
+    # Copiamos la configuración y el servicio runit (carpeta /etc)
+    # Evitamos usar `cp -a zig-out/*` para no arrastrar basura como /run o /bin al paquete
+    if [ -d zig-out/etc ]; then
+        vmkdir etc
+        cp -a zig-out/etc/* ${DESTDIR}/etc/
+    fi
 }
 
 post_install() {
