@@ -8,8 +8,8 @@ short_desc="Colección de fondos de pantalla Neko"
 maintainer="JavierC"
 license="GPL-3.0-or-later"
 homepage="https://codeberg.org/Neko-Void/neko-backgrounds"
-distfiles="https://codeberg.org/Neko-Void/neko-backgrounds/archive/${version}.tar.gz"
-checksum=3a3106b4e3edf49f9b56b3c9085db2f25edaee8e1e986cf8a7446550e59cc709
+distfiles="https://github.com/Neko-Void-Linux/neko-backgrounds/releases/download/7.0/neko-backgrounds-7.0.tar.gz"
+checksum=88b40ce9020c62565a876b7c258a65f81191a070fe8394669ab1f8aa2b888d85
 
 do_install() {
     vcopy usr/share usr
