@@ -1,6 +1,6 @@
 # Template file for 'neko-backgrounds'
 pkgname=neko-backgrounds
-version=6.9
+version=7.0
 revision=1
 archs=x86_64
 wrksrc="neko-backgrounds"
