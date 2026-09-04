@@ -11,8 +11,8 @@ short_desc="Lightweight TUI display manager"
 maintainer="Haris <plavpxl@proton.me>"
 license="WTFPL"
 homepage="https://codeberg.org/fairyglade/ly"
-distfiles="${homepage}/archive/v${version}.tar.gz"
-checksum=16fe5f07cc7a23930880b14d905883644cdc4b574d1c146629f6b98ee8fbbab9
+distfiles="https://github.com/javiercplus/ly-xbps/releases/download/1.5.0.1/ly-v1.5.0-rc1.tar.gz"
+checksum=8dd5554b420598437b5456ff1f41d40bae93a6f59b5f39771498305b59b8ce37
 
 conf_files="
  /etc/ly/config.ini
