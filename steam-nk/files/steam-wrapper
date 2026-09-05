@@ -79,10 +79,20 @@ fi
 # Variables de entorno dentro del sandbox
 ARGS+=( --setenv HOME "/home/$USER" )
 ARGS+=( --setenv DISPLAY "$DISPLAY" )
-ARGS+=( --setenv DBUS_SESSION_BUS_ADDRESS "$DBUS_SESSION_BUS_ADDRESS" )
 ARGS+=( --setenv XDG_RUNTIME_DIR "/run/user/$(id -u)" )
 ARGS+=( --setenv XDG_DATA_DIRS "/usr/share:/usr/local/share" )
 ARGS+=( --setenv VERSION_ID "rolling" )
 
+# Solo pasamos la variable DBUS si realmente existe
+if [ -n "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    ARGS+=( --setenv DBUS_SESSION_BUS_ADDRESS "$DBUS_SESSION_BUS_ADDRESS" )
+fi
+
 # Ejecutar pasando el arreglo directamente, sin eval
-exec bwrap "${ARGS[@]}" /usr/lib/steam/bin_steam.sh -no-cef-sandbox -cef-disable-gpu "$@"
+# Si no hay DBUS detectado, envolvemos la ejecución en dbus-run-session
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    echo "Sesión de D-Bus no detectada. Iniciando con dbus-run-session..."
+    exec dbus-run-session -- bwrap "${ARGS[@]}" /usr/lib/steam/bin_steam.sh -no-cef-sandbox -cef-disable-gpu "$@"
+else
+    exec bwrap "${ARGS[@]}" /usr/lib/steam/bin_steam.sh -no-cef-sandbox -cef-disable-gpu "$@"
+fi
