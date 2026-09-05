@@ -1,6 +1,6 @@
 pkgname=steam-nk
 version=1.0.0.85
-revision=8
+revision=9
 archs="x86_64"
 create_wrksrc=yes
 short_desc="Digital distribution platform by Valve (sandboxed binary version)"
