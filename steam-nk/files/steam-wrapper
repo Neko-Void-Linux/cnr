@@ -17,6 +17,7 @@ ARGS=(
   --ro-bind /lib64 /lib64
   --symlink usr/lib /lib32
   --ro-bind /etc /etc
+  --ro-bind-try /var /var
   --ro-bind /bin /bin
   --ro-bind /sbin /sbin
   --ro-bind /sys /sys
@@ -24,6 +25,10 @@ ARGS=(
   --proc /proc
   --bind /tmp /tmp
   --bind /run /run
+  
+  # Tapar el directorio conflictivo de FUSE para evitar errores del portal
+  --tmpfs "/run/user/$(id -u)/doc"
+
   --bind "$SANDBOX_HOME" "/home/$USER"
   --bind-try /run/media /run/media
   --bind-try /mnt /mnt
@@ -83,16 +88,25 @@ ARGS+=( --setenv XDG_RUNTIME_DIR "/run/user/$(id -u)" )
 ARGS+=( --setenv XDG_DATA_DIRS "/usr/share:/usr/local/share" )
 ARGS+=( --setenv VERSION_ID "rolling" )
 
-# Solo pasamos la variable DBUS si realmente existe
-if [ -n "$DBUS_SESSION_BUS_ADDRESS" ]; then
-    ARGS+=( --setenv DBUS_SESSION_BUS_ADDRESS "$DBUS_SESSION_BUS_ADDRESS" )
+# Bloquear GVFS y portales para evitar que inicien servicios host dentro de bwrap
+ARGS+=( --setenv GIO_USE_VFS "local" )
+ARGS+=( --setenv GIO_USE_PORTALS "0" )
+ARGS+=( --setenv GTK_USE_PORTAL "0" )
+
+# ----- Gestión de D-Bus -----
+# Si la variable no existe, intentamos adivinar la ruta estándar del socket
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    if [ -S "/run/user/$(id -u)/bus" ]; then
+        echo "Socket de D-Bus detectado manualmente."
+        DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+    fi
 fi
 
-# Ejecutar pasando el arreglo directamente, sin eval
-# Si no hay DBUS detectado, envolvemos la ejecución en dbus-run-session
-if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
-    echo "Sesión de D-Bus no detectada. Iniciando con dbus-run-session..."
-    exec dbus-run-session -- bwrap "${ARGS[@]}" /usr/lib/steam/bin_steam.sh -no-cef-sandbox -cef-disable-gpu "$@"
-else
+# Decidimos cómo lanzar Steam
+if [ -n "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    ARGS+=( --setenv DBUS_SESSION_BUS_ADDRESS "$DBUS_SESSION_BUS_ADDRESS" )
     exec bwrap "${ARGS[@]}" /usr/lib/steam/bin_steam.sh -no-cef-sandbox -cef-disable-gpu "$@"
+else
+    echo "Sesión de D-Bus no detectada. Iniciando dbus-run-session dentro del sandbox..."
+    exec bwrap "${ARGS[@]}" dbus-run-session -- /usr/lib/steam/bin_steam.sh -no-cef-sandbox -cef-disable-gpu "$@"
 fi
