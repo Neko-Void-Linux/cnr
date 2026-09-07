@@ -1,8 +1,6 @@
-# Template file for 'libqt6pas-bin'
 pkgname=libqt6pas-bin
 version=6.2.10
-revision=3
-only_for_archs="x86_64"
+revision=4
 short_desc="Free Pascal Qt6 binding library"
 maintainer="JavierC"
 license="LGPL-2.1-or-later"
@@ -10,13 +8,17 @@ homepage="https://github.com/davidbannon/libqt6pas"
 distfiles="https://github.com/davidbannon/libqt6pas/releases/download/v6.2.10/libqt6pas_6_2_10-1_amd64.tar.gz"
 checksum=28c677a5eb6f260b32a8ee30bbed97d927f22607174bc520474c94a137d7c494
 
+# Declaramos la librería para que xbps-src la resuelva correctamente
+shlib_provides="libQt6Pas.so.6"
+
 # Le decimos a xbps-src el nombre exacto de la carpeta que se extrae del tarball
 wrksrc="libqt6pas_6_2_10-1_amd64"
+
 do_install() {
     # vinstall instala el archivo, asigna permisos (755 para librerías dinámicas) y lo coloca en usr/lib
     vinstall libQt6Pas.so.6.2.10 755 usr/lib
     
-    # Creamos los symlinks para que Goverlay y el sistema reconozcan el SONAME
-    ln -sf ${DESTDIR}/usr/lib/libQt6Pas.so.6.2.10 ${DESTDIR}/usr/lib/libQt6Pas.so.6
+    # Creamos los symlinks usando rutas relativas en el origen
+    ln -sf libQt6Pas.so.6.2.10 ${DESTDIR}/usr/lib/libQt6Pas.so.6
     ln -sf libQt6Pas.so.6 ${DESTDIR}/usr/lib/libQt6Pas.so
 }
