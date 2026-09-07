@@ -1,6 +1,6 @@
-# Template file for 'goverlay-bin' (Nightly)
+# Template file for 'goverlay-bin' 
 pkgname=goverlay-bin
-version=4198d998f
+version=1.9.0
 revision=1
 archs="x86_64"
 create_wrksrc=yes
@@ -9,8 +9,8 @@ short_desc="Modern Qt6 GUI application to configure MangoHud, vkBasalt, and more
 maintainer="Tu Nombre <tu@email.com>"
 license="GPL-3.0-or-later"
 homepage="https://github.com/benjamimgois/Goverlay"
-distfiles="https://github.com/benjamimgois/goverlay/releases/download/nightly/goverlay_${version}_amd64.deb"
-checksum=dca3a283d6f1dba4216468c2be4a28af354a87ede72fb92728d23accbd34a4b9
+distfiles="https://github.com/benjamimgois/goverlay/releases/download/1.9.0/goverlay-1.9.0-x86_64.deb"
+checksum=ad2aafae46f4787451d771db9e104bc70803a520d4a891b0493d06aec0d3c65c
 
 # Conflictos por si también compilas la versión estable 'goverlay'
 conflicts="goverlay>=0"
