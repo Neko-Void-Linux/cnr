@@ -1,9 +1,8 @@
-# Template file for 'goverlay-bin' 
+# Template file for 'goverlay-bin'
 pkgname=goverlay-bin
 version=1.9.0
 revision=1
-archs="x86_64"
-create_wrksrc=yes
+only_for_archs="x86_64"
 depends="MangoHud qt6-base qt6-declarative gamemode nerd-fonts"
 short_desc="Modern Qt6 GUI application to configure MangoHud, vkBasalt, and more"
 maintainer="Tu Nombre <tu@email.com>"
@@ -16,15 +15,11 @@ conflicts="goverlay>=0"
 provides="goverlay-${version}_${revision}"
 
 do_extract() {
-    # El nombre del archivo descargado usa guiones en lugar de guiones bajos
-    ar x ${XBPS_SRCDISTDIR}/goverlay-${version}-x86_64.deb
-    
-    # Luego extraemos el archivo data.tar.* (puede ser .xz, .gz o .zst) que contiene los binarios
-    tar xf data.tar.*
+    # 1. Extraemos el contenido del .deb (.tar, debian-binary, etc.) en el entorno de trabajo
+    ar x ${XBPS_SRCDISTDIR}/${pkgname}-${version}/goverlay-${version}-x86_64.deb
 }
 
 do_install() {
-    # El archivo data.tar contiene la estructura estándar (usr/bin, usr/share, etc.)
-    # Simplemente copiamos el directorio 'usr' al árbol de instalación del paquete
-    vcopy usr /
+    # 2. Extraemos la estructura de directorios directamente al destino final del paquete
+    tar xf data.tar.* -C ${DESTDIR}
 }
