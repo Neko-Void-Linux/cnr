@@ -58,6 +58,7 @@ ARGS=(
   --bind-try /media /media
   --bind-try "$HOME/.local/share/applications" "/home/$USER/.local/share/applications"
   --bind-try "$HOME/.local/share/icons" "/home/$USER/.local/share/icons"
+  --bind-try "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY"
 )
 
 # ----- Gestión de la autoridad X11 -----
