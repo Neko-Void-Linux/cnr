@@ -14,7 +14,7 @@ checksum=ad2aafae46f4787451d771db9e104bc70803a520d4a891b0493d06aec0d3c65c
 nopie=yes
 conflicts="goverlay>=0"
 provides="goverlay-${version}_${revision}"
-
+ignore_shlibs="libQt6Pas.so.6"
 do_extract() {
     # 1. Extraemos el contenido del .deb (.tar, debian-binary, etc.) en el entorno de trabajo
     ar x ${XBPS_SRCDISTDIR}/${pkgname}-${version}/goverlay-${version}-x86_64.deb
