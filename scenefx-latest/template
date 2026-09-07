@@ -5,7 +5,8 @@ revision=1
 build_style=meson
 configure_args="-Dwerror=false -Db_ndebug=false"
 hostmakedepends="pkg-config wayland-devel scdoc"
-makedepends="wlroots0.19-devel"
+# Cambiamos wlroots0.19-devel por wlroots0.20-devel
+makedepends="wlroots0.20-devel"
 short_desc="Drop-in replacement for the wlroots scene API"
 maintainer="Christopher K. 'Shmish' Schmitt <me@shmish.dev>"
 license="MIT"
@@ -15,15 +16,15 @@ distfiles="https://github.com/wlrfx/scenefx/archive/refs/tags/${version}.tar.gz"
 checksum=0fa8ecca0e310f813efd052624c5ed7d9153d6a0fdead5cc957d34c07f9a86c6
 
 post_install() {
-	vlicense LICENSE
+    vlicense LICENSE
 }
 
 scenefx-devel_package() {
-	short_desc+=" - development files"
-	depends="${sourcepkg}>=${version}_${revision}"
+    short_desc+=" - development files"
+    depends="${sourcepkg}>=${version}_${revision}"
 
-	pkg_install() {
-		vmove usr/include
-		vmove usr/lib/pkgconfig
-	}
+    pkg_install() {
+        vmove usr/include
+        vmove usr/lib/pkgconfig
+    }
 }
