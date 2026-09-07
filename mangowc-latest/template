@@ -20,7 +20,3 @@ checksum=23dd7edbd18a7823ba3839bb757f29f4f1662d5f7a919797cbecdbf594654414
 build_options="xwayland"
 desc_option_xwayland="Enable Xwayland support"
 
-post_extract() {
-    # Inyectamos <stdbool.h> en la primera línea del archivo problemático
-    sed -i '1s/^/#include <stdbool.h>\n/' include/mango/manage/misc.h
-}
