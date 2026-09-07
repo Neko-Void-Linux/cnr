@@ -12,10 +12,9 @@ checksum=28c677a5eb6f260b32a8ee30bbed97d927f22607174bc520474c94a137d7c494
 
 # Le decimos a xbps-src el nombre exacto de la carpeta que se extrae del tarball
 wrksrc="libqt6pas_6_2_10-1_amd64"
-
 do_install() {
-    # vlib copia el archivo a /usr/lib y le asigna los permisos correctos (755)
-    vlib libQt6Pas.so.${version}
+    # vinstall instala el archivo, asigna permisos (755 para librerías dinámicas) y lo coloca en usr/lib
+    vinstall libQt6Pas.so.${version} 755 usr/lib
     
     # Creamos los symlinks para que Goverlay y el sistema reconozcan el SONAME
     ln -sf libQt6Pas.so.${version} ${DESTDIR}/usr/lib/libQt6Pas.so.6
