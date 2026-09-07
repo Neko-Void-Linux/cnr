@@ -11,7 +11,7 @@ license="GPL-3.0-or-later"
 homepage="https://github.com/benjamimgois/Goverlay"
 distfiles="https://github.com/benjamimgois/goverlay/releases/download/${version}/goverlay-${version}-x86_64.deb"
 checksum=ad2aafae46f4787451d771db9e104bc70803a520d4a891b0493d06aec0d3c65c
-
+nopie=yes
 conflicts="goverlay>=0"
 provides="goverlay-${version}_${revision}"
 
