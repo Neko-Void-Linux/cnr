@@ -1,0 +1,31 @@
+# Template file for 'goverlay-bin' (Nightly)
+pkgname=goverlay-bin
+version=4198d998f
+revision=1
+archs="x86_64"
+create_wrksrc=yes
+depends="mangohud qt6pas gamemode nerd-fonts"
+short_desc="Modern Qt6 GUI application to configure MangoHud, vkBasalt, and more (Nightly)"
+maintainer="Tu Nombre <tu@email.com>"
+license="GPL-3.0-or-later"
+homepage="https://github.com/benjamimgois/Goverlay"
+distfiles="https://github.com/benjamimgois/goverlay/releases/download/nightly/goverlay_${version}_amd64.deb"
+checksum=dca3a283d6f1dba4216468c2be4a28af354a87ede72fb92728d23accbd34a4b9
+
+# Conflictos por si también compilas la versión estable 'goverlay'
+conflicts="goverlay>=0"
+provides="goverlay-${version}_${revision}"
+
+do_extract() {
+    # Los paquetes .deb son archivos 'ar'. Primero extraemos su contenido.
+    ar x ${XBPS_SRCDISTDIR}/goverlay_${version}_amd64.deb
+    
+    # Luego extraemos el archivo data.tar.* (puede ser .xz, .gz o .zst) que contiene los binarios
+    tar xf data.tar.*
+}
+
+do_install() {
+    # El archivo data.tar contiene la estructura estándar (usr/bin, usr/share, etc.)
+    # Simplemente copiamos el directorio 'usr' al árbol de instalación del paquete
+    vcopy usr /
+}
