@@ -2,11 +2,11 @@
 pkgname=mangowc-latest
 version=0.16.3
 revision=1
+# Indicamos el nombre de la carpeta que se extrae del tarball
+wrksrc="mango-main" 
 conf_files="/etc/mango/config.conf"
 build_style=meson
 hostmakedepends="pkg-config wayland-devel"
-# Nota: dejé scenefx-latest tal como lo pusiste, pero recuerda que si 
-# separaste el paquete, debería ser scenefx-latest-devel
 makedepends="cJSON-devel wlroots0.20-devel pcre2-devel pango-devel scenefx-latest"
 depends="$(vopt_if xwayland xorg-server-xwayland)"
 short_desc="Dwl-based wayland compositor using scenefx"
@@ -19,4 +19,3 @@ checksum=0a294086acd6a70ad0af3f3b1b850774f15f2d36bb655b2954845e9717f95764
 
 build_options="xwayland"
 desc_option_xwayland="Enable Xwayland support"
-
