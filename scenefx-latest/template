@@ -1,5 +1,5 @@
 # Template file for 'scenefx'
-pkgname=scenefx
+pkgname=scenefx-latest
 version=0.5
 revision=1
 build_style=meson
