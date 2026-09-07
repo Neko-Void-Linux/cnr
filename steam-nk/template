@@ -15,7 +15,7 @@ hostmakedepends="binutils tar xz"
 
 depends="desktop-file-utils hicolor-icon-theme xdg-utils zenity bubblewrap
  libgcc-32bit libstdc++-32bit libdrm-32bit libglvnd-32bit libibus libibus-32bit vulkan-loader-32bit
- libopenal-32bit libXrandr-32bit libnm-32bit dbus-glib libXtst libdrm
+ libopenal-32bit libXrandr-32bit xauth libnm-32bit dbus-glib libXtst libdrm
  libpciaccess libxshmfence nss-32bit nss p11-kit p11-kit-32bit xhost gtk+-32bit gdk-pixbuf-32bit libcurl
  gtk+-32bit libpipewire-32bit libva-32bit libvdpau-32bit libvdpau mesa-dri mesa-dri-32bit
  steam-udev-rules SDL2 SDL2-32bit libpulseaudio-32bit alsa-plugins-pulseaudio-32bit"
