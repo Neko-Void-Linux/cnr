@@ -1,11 +1,11 @@
-# Template file for 'scenefx'
+# Template file for 'scenefx-latest'
 pkgname=scenefx-latest
 version=0.5
 revision=1
+wrksrc="scenefx-${version}"
 build_style=meson
 configure_args="-Dwerror=false -Db_ndebug=false"
 hostmakedepends="pkg-config wayland-devel scdoc"
-# Cambiamos wlroots0.19-devel por wlroots0.20-devel
 makedepends="wlroots0.20-devel"
 short_desc="Drop-in replacement for the wlroots scene API"
 maintainer="Christopher K. 'Shmish' Schmitt <me@shmish.dev>"
@@ -18,8 +18,7 @@ checksum=0fa8ecca0e310f813efd052624c5ed7d9153d6a0fdead5cc957d34c07f9a86c6
 post_install() {
     vlicense LICENSE
 }
-
-scenefx-devel_package() {
+scenefx-latest-devel_package() {
     short_desc+=" - development files"
     depends="${sourcepkg}>=${version}_${revision}"
 

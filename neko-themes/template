@@ -1,15 +1,15 @@
 # Template file for 'neko-themes'
 pkgname=neko-themes
-version=6.5
+version=7.1
 revision=1
 archs=x86_64
 wrksrc="neko-themes"
 short_desc="Colección de temas"
 maintainer="JavierC"
 license="GPL-3.0-or-later"
-homepage="https://codeberg.org/Neko-Void/neko-themes"
-distfiles="https://codeberg.org/Neko-Void/neko-themes/archive/${version}.tar.gz"
-checksum=471c385228d26e8a4b3e993f4de0374020c752dd4f0b9a7d1e5e972510919606 
+homepage="https://github.com/Neko-Void-Linux/neko-themes"
+distfiles="https://github.com/Neko-Void-Linux/neko-themes/releases/download/7.1/neko-themes-7.1.tar.gz"
+checksum=1d6a5e4c3b6d7e1d97fb308d55fc2f60f74530f4ca9b01b9b4ad73edd8ece39d
 
 do_install() {
     vcopy usr/share usr
