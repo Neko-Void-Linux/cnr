@@ -1,6 +1,6 @@
 # Template file for 'kasha-installer'
 pkgname=Kasha-Installer
-version=7.3
+version=7.4
 revision=5
 build_style=gnu-configure
 hostmakedepends="pkg-config xxd"
@@ -11,7 +11,7 @@ maintainer="JavierC"
 license="BSD-3-Clause"
 homepage="https://codeberg.org/javiercplus/Kasha-Installer"
 distfiles="https://codeberg.org/javiercplus/Kasha-Installer/archive/${version}.tar.gz"
-checksum=ed882aa76350afb196fbef2fdc9689d9a10447787d395bd50c561859f93d0035
+checksum=b0cd5e30c5bec53e669f7a8c36c52d4e27e883bcf2d24cd07249dc1e79a753de
 
 do_configure() {
 	# No hay nada que configurar

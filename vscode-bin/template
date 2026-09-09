@@ -1,5 +1,5 @@
 pkgname=vscode-bin
-version=1.96.4
+version=1.136.2
 revision=2
 archs="x86_64"
 create_wrksrc=yes
@@ -12,11 +12,11 @@ short_desc="Visual Studio Code (official Microsoft binary release)"
 maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
 license="custom:Unfree"
 homepage="https://code.visualstudio.com"
-distfiles="https://vscode.download.prss.microsoft.com/dbazure/download/stable/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/code-stable-x64-1787668990.tar.gz"
-checksum=470f281e9d75f03b1b957f38e193580140de3b1d9c9ba6db13e7bf30aead4e00
+distfiles="https://vscode.download.prss.microsoft.com/dbazure/download/stable/88e44fa0e00b08f7758b4f6d05632e4fd5e4df6f/code-stable-x64-1788561485.tar.gz"
+checksum=2bab551c3677d33010e317a7845e61d2f0fa0c80f8518399c42e0f941f64f18f
 
 do_extract() {
-    tar -xf "${XBPS_SRCDISTDIR}/${pkgname}-${version}/code-stable-x64-1787668990.tar.gz" -C "${wrksrc}" --strip-components=1
+    tar -xf "${XBPS_SRCDISTDIR}/${pkgname}-${version}/code-stable-x64-1788561485.tar.gz" -C "${wrksrc}" --strip-components=1
 }
 
 do_install() {
