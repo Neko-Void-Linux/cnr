@@ -24,7 +24,7 @@ do_install() {
 
 	# Copiar las carpetas de recursos y data
 	vcopy resources usr/lib/Neko-Wizard/resources
-    vcopy xbps.d etc/xbps.d
+    vcopy xbps.d/20-repository-neko.conf etc/xbps.d
 	vcopy data usr/lib/Neko-Wizard/data
 
 	# Enlace simbólico en /usr/bin
