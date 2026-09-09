@@ -1,0 +1,48 @@
+# Template file for 'chatgpt'
+pkgname=chatgpt
+version=26.903.61454
+revision=1
+archs="x86_64"
+build_style=fetch
+hostmakedepends="binutils tar xz"
+depends="gtk+3 libnotify nss xdg-utils at-spi2-core libdrm mesa-dri libxcb
+ glib alsa-lib at-spi2-atk atk cairo libcups dbus-libs expat libgcc
+ gdk-pixbuf mesa nspr pango libstdc++ eudev-libudev libusb libX11
+ libXcomposite libXdamage libXext libXfixes libxkbcommon libXrandr
+ vulkan-loader xz"
+short_desc="ChatGPT desktop app and Codex CLI by OpenAI"
+maintainer="CrowRei34"
+license="custom:Proprietary"
+homepage="https://developers.openai.com/codex/app"
+distfiles="https://persistent.oaistatic.com/codex-app-prod/linux/deb/pool/main/c/chatgpt/chatgpt_${version}_amd64.deb"
+checksum=2caa7df314ce37e9048359d8e6a4a78e24574a3b54d6bf510f17754b66dda775
+nostrip=yes
+nodebug=yes
+noshlibprovides=yes
+noverifyrdeps=yes
+nopie=yes
+
+do_install() {
+	vextract "chatgpt_${version}_amd64.deb"
+
+	# Exponer las herramientas de Codex en el PATH del sistema.
+	if [ -x usr/lib/chatgpt/resources/codex ]; then
+		vmkdir usr/bin
+		ln -sf /usr/lib/chatgpt/resources/codex "${DESTDIR}/usr/bin/codex"
+	fi
+	if [ -x usr/lib/chatgpt/resources/codex-code-mode-host ]; then
+		vmkdir usr/bin
+		ln -sf /usr/lib/chatgpt/resources/codex-code-mode-host \
+			"${DESTDIR}/usr/bin/codex-code-mode-host"
+	fi
+
+	# Normalizar permisos de los archivos de integración de escritorio.
+	[ ! -e usr/share/applications/chatgpt.desktop ] || \
+		chmod 0644 usr/share/applications/chatgpt.desktop
+	[ ! -e usr/share/pixmaps/chatgpt.png ] || \
+		chmod 0644 usr/share/pixmaps/chatgpt.png
+
+	# Registrar la licencia incluida en el paquete oficial.
+	[ ! -e usr/share/doc/chatgpt/copyright ] || \
+		vlicense usr/share/doc/chatgpt/copyright
+}
