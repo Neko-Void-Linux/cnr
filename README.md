@@ -1,5 +1,5 @@
 # CNR / CUSTOM NEKO REPO
-A collection of NEKO VOID templates for xbps-src
+A collection of NEKO VOID templates for xbps-src yeah!
 ### x86_64 REPO
 example
 
