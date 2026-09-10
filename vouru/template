@@ -1,0 +1,16 @@
+# Template file for 'vouru'
+pkgname=vouru
+version=3.0
+revision=1
+depends="xtools git curl bash sudo"
+short_desc="Void User Repository Helper - build/install packages from git and void-packages"
+maintainer="JavierC"
+license="BSD-3-Clause"
+homepage="https://github.com/javiercplus/vouru"
+distfiles="https://github.com/javiercplus/vouru/releases/download/${version}/vouru-${version}.tar.gz"
+checksum=bac3daf9f142d0ed2abee4cb64bc1acda2ccea36462c78c7890309b686f16e10
+
+do_install() {
+	vbin vouru
+	vlicense LICENSE
+}
