@@ -27,8 +27,8 @@ mkdir -p "$SANDBOX_HOME/.local/share/Steam"
 mkdir -p "$SANDBOX_HOME/.config"
 mkdir -p "$HOME/.local/share/applications"
 mkdir -p "$HOME/.local/share/icons"
-mkdir -p "$HOME/.cache/Steam"
-mkdir -p "$HOME/.cache/mesa_shader_cache"
+mkdir -p "$SANDBOX_HOME/.cache/Steam"
+mkdir -p "$SANDBOX_HOME/.cache/mesa_shader_cache"
 
 # Build the bwrap arguments using a safe array
 ARGS=(
@@ -59,9 +59,28 @@ ARGS=(
   --bind-try "$HOME/.local/share/applications" "/home/$USER/.local/share/applications"
   --bind-try "$HOME/.local/share/icons" "/home/$USER/.local/share/icons"
   --bind-try "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY"
-  --bind-try "$HOME/.cache/Steam" "/home/$USER/.cache/Steam" 
-  --bind-try "$HOME/.cache/mesa_shader_cache" "/home/$USER/.cache/mesa_shader_cache" 
+  --bind-try "$SANDBOX_HOME/.cache/Steam" "/home/$USER/.cache/Steam" 
+  --bind-try "$SANDBOX_HOME/.cache/mesa_shader_cache" "/home/$USER/.cache/mesa_shader_cache" 
 )
+
+# ----- Expose real home folders inside the sandbox -----
+# Steam's file chooser needs to see your personal folders (games, documents)
+# and any disk mounted under $HOME (e.g. ~/Documentos/server).
+# Bind mounts include sub-mounts automatically, so mounted drives come along.
+for dir in "$HOME"/*/ ; do
+    [ -d "$dir" ] || continue
+    dir="${dir%/}"
+    name="$(basename "$dir")"
+    # Never bind the sandbox inside itself
+    [ "$name" = "steam_sandbox" ] && continue
+    # Guarantee the mount point exists inside the sandbox home
+    mkdir -p "$SANDBOX_HOME/$name"
+    ARGS+=( --bind "$dir" "/home/$USER/$name" )
+done
+
+# Optional: extra host paths not under $HOME (uncomment/edit as needed)
+# ARGS+=( --bind-try /data /data )
+# ARGS+=( --bind-try /games /games )
 
 # ----- D-Bus management -----
 DBUS_SOCKET="/run/user/$(id -u)/bus"
