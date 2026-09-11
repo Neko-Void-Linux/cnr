@@ -1,7 +1,7 @@
 # Template file for 'Neko-Wizard'
 pkgname=Neko-Wizard
 version=9.0.15
-revision=5
+revision=7
 build_style=meson
 hostmakedepends="pkg-config meson ninja cmake"
 makedepends="gtk4-devel"
@@ -9,21 +9,22 @@ short_desc="Wizard Post Install for NEKO VOID"
 maintainer="JavierC"
 license="WTFPL"
 homepage="https://github.com/Neko-Void-Linux/Neko-Wizard"
-distfiles="https://github.com/Neko-Void-Linux/Neko-Wizard/releases/download/9.0.15/Neko-Wizard-9.0.15.tar.gz"
-checksum="ed064bef3006189e4fff4a551a3fa5c3d229ec68e6c657c838485909b3e7aa0c"
+distfiles="https://github.com/Neko-Void-Linux/Neko-Wizard/releases/download/9.0.15/Neko-Wizard-main.tar.gz"
+checksum="051a97bd01f618f2360f8b512aef1a77fcfe040f1cff8af5c6d6b70b66b79850"
 
 do_install() {
 	# Crear todos los directorios base necesarios primero
 	vmkdir usr/lib/Neko-Wizard
 	vmkdir usr/bin
 	vmkdir usr/share/applications
-
+    vmkdir etc/xbps.d
 	# Instalar el binario compilado
 	vcopy build/neko-store usr/lib/Neko-Wizard/neko-store
 	chmod 755 "${DESTDIR}/usr/lib/Neko-Wizard/neko-store"
 
 	# Copiar las carpetas de recursos y data
 	vcopy resources usr/lib/Neko-Wizard/resources
+    vcopy xbps.d/20-repository-neko.conf etc/xbps.d
 	vcopy data usr/lib/Neko-Wizard/data
 
 	# Enlace simbólico en /usr/bin

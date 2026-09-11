@@ -1,6 +1,6 @@
 # Template file for 'protonup-qt'
 pkgname=protonup-qt
-version=2.15.0
+version=2.15.1
 revision=1
 build_style=python3-pep517
 hostmakedepends="python3-setuptools python3-wheel"
@@ -11,7 +11,7 @@ license="GPL-3.0-or-later"
 homepage="https://davidotek.github.io/protonup-qt"
 changelog="https://raw.githubusercontent.com/DavidoTek/ProtonUp-Qt/main/CHANGELOG.md"
 distfiles="https://github.com/DavidoTek/ProtonUp-Qt/archive/refs/tags/v${version}.tar.gz"
-checksum=d06fae6748c811ac942e3cd2a1d3de3efbf330b442323580ebe9b581f39546da
+checksum=7028c0f3451fcb69f384ba0687b58a973b35fab2b0a64d5435eb1f782f09ea08
 
 post_patch() {
 	# Corregir dependencias y el comando del ejecutable en el .desktop

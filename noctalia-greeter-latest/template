@@ -1,5 +1,5 @@
 # Template file for 'noctalia-greeter'
-pkgname=noctalia-greeter
+pkgname=noctalia-greeter-latest
 version=1.3.0
 revision=1
 build_style=meson

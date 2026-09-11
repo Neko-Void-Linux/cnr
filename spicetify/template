@@ -1,6 +1,6 @@
 # Template file for 'spicetify'
 pkgname=spicetify
-version=2.43.2
+version=2.44.0
 revision=1
 build_style=go
 go_import_path="github.com/spicetify/cli"
@@ -10,7 +10,7 @@ maintainer="JavierC"
 license="LGPL-2.1-only"
 homepage="https://spicetify.app/"
 distfiles="https://github.com/spicetify/cli/archive/refs/tags/v${version}.tar.gz"
-checksum=3debce8af8e071ff9ec75b6a8a296bbd0bb5963151721b0ad2723660b64f65c5
+checksum=aafdfceeae5ff926ffe27bf3808cd4228e3a2725f7f3539531f4f5c0ac98962d
 
 post_install() {
 	# Instalamos los activos necesarios en una ruta global compartida
