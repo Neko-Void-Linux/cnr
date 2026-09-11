@@ -2,7 +2,7 @@
 pkgname=vouru
 version=3.3
 revision=1
-depends="xtools git curl bash sudo"
+depends="xtools git curl bash sudo xbps"
 short_desc="Void User Repository Helper - build/install packages from git and void-packages"
 maintainer="JavierC"
 license="BSD-3-Clause"
