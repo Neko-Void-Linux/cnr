@@ -33,7 +33,7 @@ mkdir -p "$SANDBOX_HOME/.cache/mesa_shader_cache"
 # Build the bwrap arguments using a safe array
 ARGS=(
   # --unshare-pid  # Commented out so Xwayland can validate the PID correctly
-  
+
   --ro-bind /usr /usr
   --ro-bind-try /usr/lib32 /usr/lib32
   --ro-bind /lib /lib
@@ -47,7 +47,7 @@ ARGS=(
   --proc /proc
   --bind /tmp /tmp
   --bind /run /run
-  
+
   # Mask the conflicting FUSE directory to avoid portal errors
   --tmpfs "/run/user/$(id -u)/doc"
 
@@ -59,8 +59,8 @@ ARGS=(
   --bind-try "$HOME/.local/share/applications" "/home/$USER/.local/share/applications"
   --bind-try "$HOME/.local/share/icons" "/home/$USER/.local/share/icons"
   --bind-try "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY"
-  --bind-try "$SANDBOX_HOME/.cache/Steam" "/home/$USER/.cache/Steam" 
-  --bind-try "$SANDBOX_HOME/.cache/mesa_shader_cache" "/home/$USER/.cache/mesa_shader_cache" 
+  --bind-try "$SANDBOX_HOME/.cache/Steam" "/home/$USER/.cache/Steam"
+  --bind-try "$SANDBOX_HOME/.cache/mesa_shader_cache" "/home/$USER/.cache/mesa_shader_cache"
 )
 
 # ----- Expose real home folders inside the sandbox -----
