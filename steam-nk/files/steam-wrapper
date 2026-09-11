@@ -64,30 +64,41 @@ ARGS=(
 )
 
 # ----- Expose real home folders inside the sandbox -----
-# Steam's file chooser needs to see your personal folders (games, documents)
-# and any disk mounted under $HOME (e.g. ~/Documentos/server).
-# Bind mounts include sub-mounts automatically, so mounted drives come along.
 for dir in "$HOME"/*/ ; do
     [ -d "$dir" ] || continue
     dir="${dir%/}"
     name="$(basename "$dir")"
-    # Never bind the sandbox inside itself
     [ "$name" = "steam_sandbox" ] && continue
-    # Guarantee the mount point exists inside the sandbox home
     mkdir -p "$SANDBOX_HOME/$name"
     ARGS+=( --bind "$dir" "/home/$USER/$name" )
 done
 
-# Optional: extra host paths not under $HOME (uncomment/edit as needed)
-# ARGS+=( --bind-try /data /data )
-# ARGS+=( --bind-try /games /games )
-
 # ----- D-Bus management -----
-DBUS_SOCKET="/run/user/$(id -u)/bus"
-if [ -S "$DBUS_SOCKET" ]; then
-    echo "D-Bus socket detected: $DBUS_SOCKET"
-    ARGS+=( --ro-bind "$DBUS_SOCKET" "$DBUS_SOCKET" )
-    ARGS+=( --setenv DBUS_SESSION_BUS_ADDRESS "unix:path=$DBUS_SOCKET" )
+DBUS_ADDR="${DBUS_SESSION_BUS_ADDRESS:-}"
+DBUS_VALID=0
+if [ -n "$DBUS_ADDR" ]; then
+    case "$DBUS_ADDR" in
+        *unix:path=*)
+            sock="${DBUS_ADDR#*unix:path=}"; sock="${sock%%,*}"
+            if [ -S "$sock" ]; then
+                ARGS+=( --ro-bind "$sock" "$sock" )
+                DBUS_VALID=1
+            fi
+            ;;
+        *abstract=*)
+            DBUS_VALID=1
+            ;;
+    esac
+fi
+
+if [ "$DBUS_VALID" -eq 1 ]; then
+    echo "D-Bus session bus taken from environment: $DBUS_ADDR"
+    ARGS+=( --setenv DBUS_SESSION_BUS_ADDRESS "$DBUS_ADDR" )
+    USE_DBUS_FALLBACK=0
+elif [ -S "/run/user/$(id -u)/bus" ]; then
+    echo "D-Bus socket detected: /run/user/$(id -u)/bus"
+    ARGS+=( --ro-bind "/run/user/$(id -u)/bus" "/run/user/$(id -u)/bus" )
+    ARGS+=( --setenv DBUS_SESSION_BUS_ADDRESS "unix:path=/run/user/$(id -u)/bus" )
     USE_DBUS_FALLBACK=0
 else
     echo "No D-Bus socket found. An isolated session will be used."
@@ -149,11 +160,159 @@ ARGS+=( --setenv VERSION_ID "rolling" )
 ARGS+=( --setenv GIO_USE_VFS "local" )
 ARGS+=( --setenv GIO_USE_PORTALS "0" )
 ARGS+=( --setenv GTK_USE_PORTAL "0" )
+ARGS+=( --setenv GTK_USE_PORTALS "0" )
 
-# ----- Final execution -----
+# ----- Zenity progress bar setup -----
+PROGRESS_PIPE="/tmp/steam_progress_$$.pipe"
+PGID_FILE="/tmp/steam_sandbox_pgid_$$"
+ZENITY_PID=""
+GUI_STARTED=0
+GUI_DONE=0
+UNPACK_SEEN=0
+ZENITY_OK=0
+command -v zenity >/dev/null 2>&1 && ZENITY_OK=1
+
+open_gui() {
+    rm -f "$PROGRESS_PIPE"
+    mkfifo "$PROGRESS_PIPE" 2>/dev/null
+    zenity --progress \
+        --title="Steam" \
+        --text="Updating Steam..." \
+        --percentage=0 \
+        --auto-close \
+        --no-cancel \
+        < "$PROGRESS_PIPE" &
+    ZENITY_PID=$!
+    sleep 0.2
+    if kill -0 "$ZENITY_PID" 2>/dev/null; then
+        exec 3>"$PROGRESS_PIPE"
+        GUI_STARTED=1
+    else
+        ZENITY_OK=0
+        rm -f "$PROGRESS_PIPE"
+    fi
+}
+
+close_gui() {
+    [ "$GUI_STARTED" -eq 1 ] || return 0
+    printf '100\n' >&3 2>/dev/null
+    exec 3>&- 2>/dev/null
+    if [ -n "$ZENITY_PID" ] && kill -0 "$ZENITY_PID" 2>/dev/null; then
+        kill "$ZENITY_PID" 2>/dev/null
+        wait "$ZENITY_PID" 2>/dev/null
+    fi
+    GUI_STARTED=0
+    GUI_DONE=1
+    rm -f "$PROGRESS_PIPE"
+}
+
+cleanup_gui() {
+    if [ -n "$ZENITY_PID" ] && kill -0 "$ZENITY_PID" 2>/dev/null; then
+        kill "$ZENITY_PID" 2>/dev/null
+    fi
+    exec 3>&- 2>/dev/null
+    rm -f "$PROGRESS_PIPE" "$PGID_FILE"
+}
+
+# Hard stop: kill zenity, the sandbox process group (via its pgid) and ours.
+hard_stop() {
+    cleanup_gui
+    if [ -s "$PGID_FILE" ]; then
+        kill -TERM -"$(cat "$PGID_FILE")" 2>/dev/null
+    fi
+    kill -TERM 0 2>/dev/null
+    exit 130
+}
+trap cleanup_gui EXIT
+trap hard_stop INT TERM
+
+# Decide what to run inside the sandbox
 if [ "$USE_DBUS_FALLBACK" -eq 0 ]; then
-    exec bwrap "${ARGS[@]}" /usr/lib/steam/bin_steam.sh -no-cef-sandbox -cef-disable-gpu "$@"
+    STEAM_CMD=( /usr/lib/steam/bin_steam.sh -no-cef-sandbox -cef-disable-gpu "$@" )
 else
     echo "D-Bus session not detected. Starting dbus-run-session inside the sandbox..."
-    exec bwrap "${ARGS[@]}" dbus-run-session -- /usr/lib/steam/bin_steam.sh -no-cef-sandbox -cef-disable-gpu "$@"
+    STEAM_CMD=( dbus-run-session -- /usr/lib/steam/bin_steam.sh -no-cef-sandbox -cef-disable-gpu "$@" )
 fi
+
+STATUS_FILE="$(mktemp)"
+
+# ----- Launcher -----
+# The pty makes Steam use its console update UI (no zenity inside sandbox).
+# CRITICAL: script's stdin must NOT be your terminal, otherwise it puts your
+# tty in raw mode (broken log rendering + dead Ctrl+C). Hence < /dev/null.
+BWRAP_FLAT="bwrap $(printf '%q ' "${ARGS[@]}")$(printf '%q ' "${STEAM_CMD[@]}")"
+SCRIPT_CMD="echo \$\$ > '$PGID_FILE'; exec $BWRAP_FLAT"
+if command -v script >/dev/null 2>&1; then
+    LAUNCH=( script -qec "$SCRIPT_CMD" /dev/null )
+else
+    LAUNCH=( sh -c "$SCRIPT_CMD" )
+fi
+
+# ----- Run Steam and drive the zenity progress bar -----
+IDLE_LIMIT=3600
+while :; do
+    if IFS= read -t "$IDLE_LIMIT" -r line; then
+        rc=0
+    else
+        rc=$?
+        if [ $rc -gt 128 ]; then
+            if [ "$GUI_STARTED" -eq 1 ]; then
+                close_gui
+            fi
+            IDLE_LIMIT=3600
+            continue
+        else
+            break
+        fi
+    fi
+
+    printf '%s\n' "$line" >&2
+
+    if [ "$GUI_DONE" -eq 1 ] || [ "$ZENITY_OK" -eq 0 ]; then
+        IDLE_LIMIT=3600
+        continue
+    fi
+
+    pct=""
+    [[ "$line" =~ \[[[:space:]]*([0-9]+)%\] ]] && pct="${BASH_REMATCH[1]}"
+
+    status_text=""
+    case "$line" in
+        *"Downloading update"*|*"Unpacking update"*|*"Installing update"*|*"Verifying installation"*|*"Update complete"*|*"Download Complete"*)
+            status_text="$line" ;;
+    esac
+    [[ "$line" == *"Unpacking update"* ]] && UNPACK_SEEN=1
+
+    if [ "$GUI_STARTED" -eq 0 ]; then
+        if [ -n "$pct" ] || [[ "$line" == *"Downloading update ("* ]] || [[ "$line" == *"Unpacking update"* ]]; then
+            open_gui
+        fi
+    fi
+
+    if [ "$GUI_STARTED" -eq 1 ]; then
+        [ -n "$pct" ] && printf '%s\n' "$pct" >&3
+        [ -n "$status_text" ] && printf '# %s\n' "${status_text:0:80}" >&3
+        if [ "${pct:-0}" -ge 100 ] \
+           || [[ "$line" == *"Startup - Steam Client launched"* ]] \
+           || [[ "$line" == *"Update complete"* ]] \
+           || [[ "$line" == *"Download Complete"* ]]; then
+            close_gui
+        fi
+    fi
+
+    if [ "$GUI_STARTED" -eq 1 ]; then
+        if [ "$UNPACK_SEEN" -eq 1 ]; then IDLE_LIMIT=120; else IDLE_LIMIT=20; fi
+    else
+        IDLE_LIMIT=3600
+    fi
+done < <(
+    "${LAUNCH[@]}" < /dev/null 2>&1 | sed -u -e 's/\x1b\[[0-9;:]*m//g' -e 's/\r$//'
+    echo "${PIPESTATUS[0]}" > "$STATUS_FILE"
+)
+
+close_gui
+
+rc=0
+[ -s "$STATUS_FILE" ] && rc="$(cat "$STATUS_FILE")"
+rm -f "$STATUS_FILE"
+exit "$rc"
