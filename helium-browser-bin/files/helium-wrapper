@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-export CHROME_VERSION_EXTRA="Void Linux"
+export CHROME_VERSION_EXTRA="Neko Void Linux"
 
 CHROME_WRAPPER="$(readlink -f "$0")"
 HERE="$(dirname "$CHROME_WRAPPER")"
