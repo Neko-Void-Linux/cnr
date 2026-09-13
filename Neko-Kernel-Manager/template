@@ -1,6 +1,6 @@
 # Template file for 'Neko-Kernel-Manager'
 pkgname=Neko-Kernel-Manager
-version=1.4.0
+version=1.4.1
 revision=1
 build_style=meson
 configure_args="-Db_lto=false"
@@ -11,4 +11,4 @@ maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
 license="GPL-3.0-only"
 homepage="https://github.com/Neko-Void-Linux/Neko-Kernel-Manager"
 distfiles="https://github.com/Neko-Void-Linux/Neko-Kernel-Manager/archive/refs/tags/${version}.tar.gz"
-checksum=9002442d0453d6c1de25740e79650a22cc55c115c5c1f0a4ae6c35c013310f5b
+checksum=1fdd8c5cfee3afc35ff1acd05c985a37ca26206c5d6ca93244eb9153f80f437f
