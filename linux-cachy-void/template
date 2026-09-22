@@ -9,7 +9,7 @@ distfiles="https://github.com/Neko-Void-Linux/kernel-neko-void/releases/download
 checksum="d1c0e44f684393be1ac7c4b99c6142e6d2a0db039d6d34656893a68977fed2c5"
 create_wrksrc=yes
 triggers="kernel-hooks"
-kernel_hooks_version="7.1.0-cachy-bore+"
+kernel_hooks_version="7.3.0-cachy-bore+"
 do_install() {
     vmkdir boot
     vmkdir usr/lib/modules
