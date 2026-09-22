@@ -1,6 +1,6 @@
 pkgname=linux-cachy-void
 version=7.3
-revision=7
+revision=9
 short_desc="Cachyos kernel precompiled for Void Linux + headers"
 maintainer="JavierC"
 license="GPL-2.0-only"
