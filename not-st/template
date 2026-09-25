@@ -1,0 +1,33 @@
+# Template file for 'not-st'
+pkgname=not-st
+version=0.9.3
+revision=3
+build_style=gnu-makefile
+make_use_env=compliant
+hostmakedepends="pkg-config make"
+makedepends="libX11-devel libXft-devel libXrender-devel fontconfig-devel freetype-devel harfbuzz-devel imlib2-devel zlib-devel"
+depends="ncurses"
+short_desc="st fork with Kitty graphics and external configuration"
+maintainer="Derszi65g"
+license="MIT"
+homepage="https://github.com/Derszi65g/not-st"
+distfiles="https://github.com/Derszi65g/not-st/archive/refs/tags/v${version}.tar.gz"
+checksum=ea0aca856e86276e42fa7300ed2b1a96404720cc8c6ef65754bdd87e5b6ac753
+
+do_build() {
+    make
+}
+
+do_install() {
+    mkdir -p ${DESTDIR}/usr/share/terminfo
+    export TERMINFO=${DESTDIR}/usr/share/terminfo
+    mkdir -p ${DESTDIR}/usr/share/applications
+    mkdir -p ${DESTDIR}/usr/share/icons
+    mkdir -p ${DESTDIR}/usr/bin
+    vinstall assets/st.desktop 644 usr/share/applications st.desktop
+    vinstall assets/st.png 644 usr/share/icons st.png
+    vbin st not-st
+    
+    vlicense LICENSE
+    vdoc README.md
+}
