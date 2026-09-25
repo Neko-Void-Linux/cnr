@@ -1,5 +1,5 @@
 pkgname=linux-neko-rt
-version=7.2.0
+version=7.3.0
 revision=2
 short_desc="Custom RT kernel precompiled for Void Linux + HEADERS"
 maintainer="JavierC"
