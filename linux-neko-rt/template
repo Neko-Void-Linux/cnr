@@ -1,15 +1,15 @@
 pkgname=linux-neko-rt
 version=7.2.0
 revision=2
-short_desc="Custom RT kernel rt-rt3-neko+ precompiled for Void Linux + HEADERS"
+short_desc="Custom RT kernel precompiled for Void Linux + HEADERS"
 maintainer="JavierC"
 license="GPL-2.0-only"
-homepage="https://github.com/franckey02/kernel-neko-void"
-distfiles="https://github.com/javiercplus/kernel-neko-void/releases/download/7.1/neko-kernel-void-7.2.0-rt-neko+.tar.gz"
-checksum="270773d5a839ec56fb36e21604084187d689555dc577e703990c03061a2c7e8f"
+homepage="https://github.com/Neko-Void-Linux/kernel-neko-void"
+distfiles="https://github.com/Neko-Void-Linux/kernel-neko-void/releases/download/latest/neko-kernel-void-7.3.0-rt-neko+.tar.gz"
+checksum="788a12f3db2893f5fb846c5ebaddda3f49b35cd434610a0fb808e7dd77196eb3"
 create_wrksrc=yes
 triggers="kernel-hooks"
-kernel_hooks_version="7.2.0-rt-neko+"
+kernel_hooks_version="7.3.0-rt-neko+"
 do_install() {
     vmkdir boot
     vmkdir usr/lib/modules
