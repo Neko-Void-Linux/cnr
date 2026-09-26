@@ -15,4 +15,5 @@ do_install() {
 	ln -sf arxy ${DESTDIR}/usr/bin/axy
 	vinstall ${FILESDIR}/arxy.conf 644 etc/arxy/
 	vinstall ${FILESDIR}/arxy.pub 644 etc/arxy/
+	vlicense ${FILESDIR}/LICENSE
 }
