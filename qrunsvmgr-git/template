@@ -1,0 +1,19 @@
+# Template file for "qrunsvmgr-git"
+pkgname=qrunsvmgr-git
+version=r14.e3a3023
+revision=1
+wrksrc="qrunsvmgr"
+build_style=cmake
+make_use_env=yes
+hostmakedepends="ninja pkg-config git"
+makedepends="qt6-base-devel qt6-tools-devel"
+depends="polkit qt6-base"
+short_desc="Service manager GUI (Qt6), supporting Runit and Dinit"
+maintainer="Kevin <kevinzz@tutamail.com>"
+license="GPL-3.0-or-later"
+homepage="https://codeberg.org/ItsZariep/qrunsvmgr"
+provides="qrunsvmgr-${version}_${revision}"
+
+do_fetch() {
+    git clone --depth 1 https://codeberg.org/ItsZariep/qrunsvmgr "${wrksrc}"
+}
