@@ -1,6 +1,6 @@
 pkgname=mangowc-latest
-version=0.17.2
-revision=1
+version=0.17.4
+revision=2
 conf_files="/etc/mango/config.conf"
 build_style=meson
 hostmakedepends="pkg-config wayland-devel"
@@ -11,8 +11,8 @@ maintainer="JavierC <javiercyt@atomicmail.io>"
 license="GPL-3.0-or-later"
 homepage="https://github.com/mangowm/mango"
 changelog="https://github.com/mangowm/mango/releases"
-distfiles="https://github.com/Neko-Void-Linux/mango/releases/download/latest/mango-main.tar.gz"
-checksum=73a105ca1927eaf04a5aba673eba062aa3307035a41407f8deee1a8a088c574d
+distfiles="https://github.com/Neko-Void-Linux/mango/releases/download/latest/mango-main.zip"
+checksum=81f87e55e07da9f3b447eb19fa2cd1d39d56f8d12f95d096899c6fc000808aa3
 
 build_options="xwayland"
 desc_option_xwayland="Enable Xwayland support"
