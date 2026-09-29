@@ -19,6 +19,7 @@ do_build() {
 }
 
 do_install() {
+	vmkdir usr/share/terminfo
 	tic -sx -o ${DESTDIR}/usr/share/terminfo st.info
 	vinstall assets/st.desktop 644 usr/share/applications not-st.desktop
 	vinstall assets/st.png 644 usr/share/pixmaps not-st.png
