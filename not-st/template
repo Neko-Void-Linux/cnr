@@ -1,7 +1,7 @@
 # Template file for 'not-st'
 pkgname=not-st
-version=0.9.3
-revision=3
+version=0.9.3.1
+revision=1
 build_style=gnu-makefile
 make_use_env=compliant
 hostmakedepends="pkg-config make"
@@ -12,22 +12,22 @@ maintainer="Derszi65g"
 license="MIT"
 homepage="https://github.com/Derszi65g/not-st"
 distfiles="https://github.com/Derszi65g/not-st/archive/refs/tags/v${version}.tar.gz"
-checksum=ea0aca856e86276e42fa7300ed2b1a96404720cc8c6ef65754bdd87e5b6ac753
+checksum=61f6787b605c1a60c7fd44a2a52e05fa3b2091208caaad6a9c30166cf000aeb4
 
 do_build() {
-    make
+	make
 }
 
 do_install() {
-    mkdir -p ${DESTDIR}/usr/share/terminfo
-    export TERMINFO=${DESTDIR}/usr/share/terminfo
-    mkdir -p ${DESTDIR}/usr/share/applications
-    mkdir -p ${DESTDIR}/usr/share/icons
-    mkdir -p ${DESTDIR}/usr/bin
-    vinstall assets/st.desktop 644 usr/share/applications st.desktop
-    vinstall assets/st.png 644 usr/share/icons st.png
-    vbin st not-st
-    
-    vlicense LICENSE
-    vdoc README.md
+	tic -sx -o ${DESTDIR}/usr/share/terminfo st.info
+	vinstall assets/st.desktop 644 usr/share/applications not-st.desktop
+	vinstall assets/st.png 644 usr/share/pixmaps not-st.png
+	vinstall assets/st.png 644 usr/share/pixmaps st.png
+	vinstall assets/st.png 644 usr/share/icons st.png
+	vbin st not-st
+	ln -sf not-st ${DESTDIR}/usr/bin/st
+	[ -f tools/st-urlhandler ] && vbin tools/st-urlhandler
+	vlicense LICENSE
+	vdoc README.md
+	vman st.1
 }
