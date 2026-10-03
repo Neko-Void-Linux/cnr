@@ -5,7 +5,7 @@ create_wrksrc=yes
 hostmakedepends="cargo git"
 short_desc="Valve's dmemcg-booster port without systemd/dbus dependencies"
 maintainer="JavierC"
-license="GPL-3.0-or-later" # Cámbiala a MIT u otra si el repo usa una distinta
+license="2026 Valve Corporation" 
 homepage="https://github.com/Neko-Void-Linux/dmemcg-booster-nk"
 
 do_build() {
