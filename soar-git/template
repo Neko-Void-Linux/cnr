@@ -12,7 +12,7 @@ do_build(){
   cargo build --release
 }
 
-post_install() {
+do_install() {
     vbin target/release/soar soar
     vlicense LICENSE
     vdoc README.md
