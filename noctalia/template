@@ -1,5 +1,5 @@
 pkgname=noctalia
-version=5.11.1
+version=5.2.1
 revision=8
 build_style=meson
 configure_args="-Dnative_optimizations=false -Db_sanitize=none"
@@ -15,6 +15,6 @@ short_desc="Noctalia - Wayland compositor and desktop environment"
 maintainer="JavierC"
 license="MIT"
 homepage="https://github.com/noctalia-dev/noctalia"
-distfiles="https://github.com/Neko-Void-Linux/noctalia/releases/download/5.11/noctalia-5.11.tar.gz"
-checksum="3b30d38af75ff9fdd871a4ab2f20874131dd8c39fe1c16ad460b359f690657eb"
+distfiles="https://github.com/Neko-Void-Linux/noctalia/releases/download/5.2.1/noctalia-5.2.1.tar.gz"
+checksum="1d17b27f64ce936c7b2d2b6fe53f7fea80f9d1f959e08b259688d05194e0223a"
 patches="disable-native-optimizations.patch"
