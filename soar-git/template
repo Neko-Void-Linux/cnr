@@ -1,0 +1,19 @@
+pkgname=soar-git
+version=0.13
+revision=1
+hostmakedepends="git cargo rust"
+short_desc="Portable package manager and downloader for Linux"
+maintainer="Javierc <javiercyt@atomicmail.io>"
+license="MIT"
+homepage="https://github.com/pkgforge/soar"
+
+do_build(){
+  git clone --depth 1 -b v0.13.4 https://github.com/pkgforge/soar.git .
+  cargo build --release
+}
+
+post_install() {
+    vbin target/release/soar soar
+    vlicense LICENSE
+    vdoc README.md
+}
