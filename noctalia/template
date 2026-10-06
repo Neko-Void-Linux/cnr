@@ -1,5 +1,5 @@
 pkgname=noctalia
-version=5.22.1
+version=5.20.1
 revision=8
 build_style=meson
 configure_args="-Dnative_optimizations=false -Db_sanitize=none"
