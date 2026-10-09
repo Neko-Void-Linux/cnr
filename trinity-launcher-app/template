@@ -17,9 +17,10 @@ nodebug=yes
 do_extract() {
 	mkdir -p "${wrksrc}"
 	cd "${wrksrc}"
-	wget https://github.com/Trinity-LA/Trinity-Launcher/releases/download/latest/Trinity_Launcher-x86_64.AppImage
+	
 	# GitHub sirve los assets sin bit de ejecucion.
 	local f="${XBPS_SRCDISTDIR}/${pkgname}-${version}/Trinity_Launcher-x86_64.AppImage"
+    wget -O $f https://github.com/Trinity-LA/Trinity-Launcher/releases/download/latest/Trinity_Launcher-x86_64.AppImage
 	chmod +x "$f"
 	"$f" --appimage-extract
 }
