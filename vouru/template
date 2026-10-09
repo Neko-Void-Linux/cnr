@@ -1,5 +1,5 @@
 pkgname=vouru
-version=3.3
+version=3.4
 revision=2
 depends="xtools git curl bash xbps"
 hostmakedepends="git"
