@@ -3,17 +3,15 @@ version=7.4
 revision=5
 build_style=gnu-configure
 hostmakedepends="pkg-config xxd"
-makedepends="gtk+3-devel"
+makedepends="gtk+3-devel git"
 depends="bash grub sed cryptsetup xxd"
 short_desc="Modular Linux system installer built with C and GTK+ 3.0"
 maintainer="JavierC"
 license="BSD-3-Clause"
-homepage="https://codeberg.org/javiercplus/Kasha-Installer"
-distfiles="https://codeberg.org/javiercplus/Kasha-Installer/archive/${version}.tar.gz"
-checksum=b0cd5e30c5bec53e669f7a8c36c52d4e27e883bcf2d24cd07249dc1e79a753de
+homepage="https://github.com/javiercplus/kasha-installer"
 
 do_configure() {
-	:
+	git clone https://github.com/javiercplus/kasha-installer.git .
 }
 
 do_build() {
