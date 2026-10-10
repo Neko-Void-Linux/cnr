@@ -1,6 +1,6 @@
 pkgname=kasha-installer
 version=7.4
-revision=5
+revision=9
 build_style=gnu-configure
 hostmakedepends="pkg-config xxd"
 makedepends="gtk+3-devel git"
