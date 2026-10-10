@@ -1,0 +1,37 @@
+# Template file for 'PineconeMC'
+pkgname=PineconeMC
+version=11.1.1
+revision=1
+build_style=cmake
+configure_args="-DLauncher_BUILD_PLATFORM=Void"
+hostmakedepends="extra-cmake-modules openjdk17 pkg-config qt6-tools qt6-base scdoc"
+makedepends="qt6-base-devel qt6-qt5compat-devel zlib-devel quazip-qt6-devel
+ qt6-networkauth-devel cmark-devel libgamemode-devel qrencode-devel
+ libarchive-devel tomlplusplus-devel"
+depends="virtual?java-runtime qt6-svg qt6-imageformats qt6-plugin-tls-openssl"
+short_desc="Fork of Prism Launcher with native Ely.by account support"
+maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
+license="GPL-3.0-only, LGPL-3.0-or-later"
+homepage="https://pineconemc.ru"
+changelog="https://github.com/ElyPrismLauncher/Launcher/releases"
+distfiles="https://github.com/ElyPrismLauncher/Launcher/releases/download/${version}/PineconeMC-${version}.tar.gz"
+checksum=ef286101f6ecde639bc79d75306147915dd05773fceddf04876d25f295a973ce
+
+if [ -z "$XBPS_CHECK_PKGS" ]; then
+	configure_args+=" -DBUILD_TESTING=0"
+fi
+
+case "$XBPS_TARGET_MACHINE" in
+	# XXX: this could be fixed by switching to clang, but it seems to produce
+	# non-PIE executables despite -fPIE being in the C(XX)FLAGS
+	# There's also some effort needed to get it working on cross
+	armv*) broken="https://github.com/ElyPrismLauncher/Launcher/issues" ;;
+esac
+
+pre_configure() {
+	. /etc/profile.d/jdk.sh
+}
+
+post_install() {
+	vdoc ${FILESDIR}/README.voidlinux
+}
