@@ -1,0 +1,104 @@
+# Template file for 'antigravity'
+pkgname=antigravity
+version=2.22.0
+revision=3
+archs="x86_64"
+
+_buildid=5446056071266304
+
+create_wrksrc=yes
+hostmakedepends=""
+makedepends=""
+depends="gtk+3 libnotify nss libXScrnSaver at-spi2-core libdrm mesa cups
+         libxkbcommon alsa-lib pango cairo gdk-pixbuf dbus libXtst
+         libXcomposite libXdamage libXfixes libXrandr atk nspr"
+
+short_desc="Antigravity Hub (cliente de escritorio)"
+maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
+license="custom"
+homepage="https://antigravity.ai"
+distfiles="https://storage.googleapis.com/antigravity-public/antigravity-hub/${version}-${_buildid}/linux-x64/Antigravity.tar.gz"
+checksum=ec09473e3b12be43538c19f9992960d7a2549cdecd31c8c35c69af77fe3aa4f1
+
+do_install() {
+    # ---------- 1. Detectar la raíz de la app ----------
+    local _bin _src
+    _bin=$(find . -maxdepth 3 -type f -name antigravity -print -quit)
+    if [ -z "$_bin" ]; then
+        msg_error "No se encontró el binario 'antigravity' en el tarball extraído.\n"
+    fi
+    _src=$(dirname "$_bin")
+    _src=${_src#./}
+    if [ -z "$_src" ]; then
+        _src="."
+    fi
+
+    msg_normal "antigravity: instalando desde '$_src'\n"
+
+    # ---------- 2. Binarios en /usr/lib/antigravity ----------
+    vmkdir usr/lib/antigravity
+    if [ "$_src" = "." ]; then
+        cp -a ./* "${DESTDIR}/usr/lib/antigravity/"
+    else
+        cp -a "${_src}/." "${DESTDIR}/usr/lib/antigravity/"
+    fi
+
+    if [ -f "${DESTDIR}/usr/lib/antigravity/chrome-sandbox" ]; then
+        chmod 4755 "${DESTDIR}/usr/lib/antigravity/chrome-sandbox"
+    fi
+
+    # ---------- 3. Iconos desde files/ ----------
+    if [ -f "${FILESDIR}/antigravity.svg" ]; then
+        vmkdir usr/share/icons/hicolor/scalable/apps
+        vinstall "${FILESDIR}/antigravity.svg" 644 \
+            usr/share/icons/hicolor/scalable/apps antigravity.svg
+    else
+        msg_normal "antigravity: falta ${FILESDIR}/antigravity.svg, se omite\n"
+    fi
+
+    if [ -f "${FILESDIR}/antigravity.png" ]; then
+        vmkdir usr/share/icons/hicolor/256x256/apps
+        vinstall "${FILESDIR}/antigravity.png" 644 \
+            usr/share/icons/hicolor/256x256/apps antigravity.png
+    else
+        msg_normal "antigravity: falta ${FILESDIR}/antigravity.png, se omite\n"
+    fi
+
+    # ---------- 4. Lanzador .desktop ----------
+    vmkdir usr/share/applications
+    cat > "${DESTDIR}/usr/share/applications/antigravity.desktop" <<'EOF'
+[Desktop Entry]
+Name=Antigravity
+Comment=Antigravity Hub desktop client
+Exec=antigravity %U
+Icon=antigravity
+Terminal=false
+Type=Application
+Categories=Development;Utility;
+StartupWMClass=Antigravity
+EOF
+    chmod 644 "${DESTDIR}/usr/share/applications/antigravity.desktop"
+
+    # ---------- 5. Wrapper en /usr/bin ----------
+    vmkdir usr/bin
+    cat > "${DESTDIR}/usr/bin/antigravity" <<'EOF'
+#!/bin/sh
+exec /usr/lib/antigravity/antigravity "$@"
+EOF
+    chmod 755 "${DESTDIR}/usr/bin/antigravity"
+
+    # ---------- 6. Licencia (opcional, con guard) ----------
+    local _lic=""
+    for lf in LICENSE LICENSE.txt LICENSE.md COPYING; do
+        if [ -f "${_src}/${lf}" ]; then
+            _lic="${_src}/${lf}"
+            break
+        fi
+    done
+
+    if [ -n "$_lic" ]; then
+        vlicense "$_lic"
+    else
+        msg_normal "antigravity: sin archivo de licencia, se omite vlicense\n"
+    fi
+}
