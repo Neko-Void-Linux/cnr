@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Aproximación del mapeo de colores 2D a un vector lineal inclinado -->
+    <linearGradient id="ag-grad" x1="15%" y1="5%" x2="85%" y2="95%">
+      <stop offset="0%" stop-color="#8ac44a"/>    <!-- Verde izquierdo -->
+      <stop offset="30%" stop-color="#ef5336"/>   <!-- Naranja/Rojo superior -->
+      <stop offset="65%" stop-color="#8d5498"/>   <!-- Violeta derecho -->
+      <stop offset="100%" stop-color="#2a82fc"/>  <!-- Azul base -->
+    </linearGradient>
+  </defs>
+  
+  <!-- Trazado geométrico del arco con curvas de Bézier -->
+  <path d="
+    M 80 410 
+    C 120 350, 160 80, 256 80 
+    C 352 80, 392 350, 432 410 
+    C 450 430, 410 450, 395 425 
+    C 350 340, 310 260, 256 260 
+    C 202 260, 162 340, 117 425 
+    C 102 450, 62 430, 80 410 Z" 
+    fill="url(#ag-grad)" 
+  />
+</svg>
