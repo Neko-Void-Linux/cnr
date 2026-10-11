@@ -1,5 +1,5 @@
 pkgname=mullvad-vpn
-version=2026.4
+version=2026.5
 revision=1
 archs="x86_64"
 short_desc="Mullvad VPN client for Linux (unofficial Void package)"
@@ -7,7 +7,7 @@ maintainer="JavierC <tu@email.com>"
 license="Proprietary"
 homepage="https://mullvad.net"
 distfiles="https://github.com/mullvad/mullvadvpn-app/releases/download/${version}/MullvadVPN-${version}_amd64.deb"
-checksum=f1d758079e1dc90fff0c8d48256599b717e1de9879682c861a6776851c59453b
+checksum=aa6bd00452588597f50e8ca2f02bb91e9c295c4f01b0ae907354552e7428e7ab
 hostmakedepends="binutils tar xz curl gnupg2"
 depends="wireguard-tools"
 
