@@ -1,0 +1,66 @@
+# Template file for 'onlyoffice'
+pkgname=onlyoffice
+version=9.4.0
+revision=2
+build_style=fetch
+short_desc="Office suite combining text, spreadsheet, presentation and PDF editors"
+maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
+license="AGPL-3.0-or-later"
+homepage="https://www.onlyoffice.com"
+distfiles="https://github.com/ONLYOFFICE/appimage-desktopeditors/releases/download/v${version}/DesktopEditors-x86_64.AppImage"
+checksum=f5faf24552665262fe94486a510b997d2e5a24bde14df94c802c79bf17f9254c
+archs="x86_64"
+nostrip=yes
+noverifyrdeps=yes
+
+# Dependencias de runtime (se instalan desde los repos de Void)
+depends="gtk+3 nss libXScrnSaver libXtst libXrandr libXcomposite libXdamage \
+ libxkbcommon libglvnd libSM libICE cups fontconfig freetype \
+ gdk-pixbuf pango cairo atk at-spi2-atk at-spi2-core libnotify \
+ desktop-file-utils hicolor-icon-theme"
+
+do_extract() {
+    chmod +x "${XBPS_SRCDISTDIR}/${pkgname}-${version}/DesktopEditors-x86_64.AppImage"
+    "${XBPS_SRCDISTDIR}/${pkgname}-${version}/DesktopEditors-x86_64.AppImage" \
+        --appimage-extract
+}
+
+do_install() {
+    local _appdir="squashfs-root"
+    local _oodir="usr/lib/onlyoffice-desktopeditors"
+
+    # Eliminar runtime del AppImage
+    rm -f "${_appdir}/AppRun" "${_appdir}/.DirIcon"
+    rm -f "${_appdir}"/usr/lib/libfuse*.so*
+    rm -f "${_appdir}"/usr/lib/ld-linux*.so*
+    rm -f "${_appdir}"/usr/lib/libz.so*
+    rm -f "${_appdir}"/usr/lib/libstdc++.so*
+    rm -f "${_appdir}"/usr/lib/libgcc_s.so*
+
+    # Eliminar plugin Soprano-Virtuoso (requiere virtodbc_r.so, no existe en Void)
+    rm -f "${_appdir}"/usr/bin/soprano/libsoprano_virtuosobackend.so
+
+    # Copiar TODO el árbol del AppImage dentro de /usr/lib/onlyoffice-desktopeditors/
+    vmkdir "${_oodir}"
+    cp -a "${_appdir}"/usr/. "${DESTDIR}/${_oodir}/"
+
+    # Wrapper en /usr/bin
+    vmkdir usr/bin
+    cat > "${DESTDIR}/usr/bin/onlyoffice-desktopeditors" <<-EOF
+	#!/bin/sh
+	export LD_LIBRARY_PATH="/${_oodir}/lib:\$LD_LIBRARY_PATH"
+	exec /${_oodir}/bin/desktopeditors "\$@"
+	EOF
+    chmod 755 "${DESTDIR}/usr/bin/onlyoffice-desktopeditors"
+
+    # .desktop en /usr/share/applications
+    vmkdir usr/share/applications
+    sed 's|^Exec=.*|Exec=onlyoffice-desktopeditors %U|; s|^Icon=.*|Icon=onlyoffice-desktopeditors|' \
+        "${_appdir}/onlyoffice-desktopeditors.desktop" \
+        > "${DESTDIR}/usr/share/applications/onlyoffice-desktopeditors.desktop"
+
+    # Icono en hicolor
+    vmkdir usr/share/icons/hicolor/256x256/apps
+    cp "${_appdir}/onlyoffice-desktopeditors.png" \
+       "${DESTDIR}/usr/share/icons/hicolor/256x256/apps/onlyoffice-desktopeditors.png"
+}
