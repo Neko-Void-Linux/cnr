@@ -1,0 +1,31 @@
+pkgname=lsfg-vk-git
+version=2026
+revision=9
+hostmakedepends="pkg-config"
+makedepends="Vulkan-Headers  qt6-base-devel git llvm curl cmake ninja qt6-declarative-devel"
+depends="Vulkan-Headers Vulkan-Tools mesa qt6-base qt6-declarative"
+short_desc="the most popular feature from the Windows-exclusive Lossless Scaling program to Linux.
+maintainer="JavierC"
+license="Creative Commons"
+homepage="https://lsfg-vk.dev"
+
+do_configure() {
+	git clone --depth 1 https://git.lsfg-vk.dev/lsfg-vk.git .
+}
+
+do_build() {
+	cd ${wrksrc}
+	cmake -B build -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_CXX_COMPILER_AR=/usr/bin/llvm-ar \
+    -DCMAKE_CXX_COMPILER_RANLIB=/usr/bin/llvm-ranlib \
+    -DLSFGVK_BUILD_UI=ON
+  cmake --build build
+}
+
+do_install() {
+  cmake --install build
+}
