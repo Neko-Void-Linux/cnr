@@ -16,31 +16,34 @@ do_configure() {
 do_build() {
 	cd ${wrksrc}
 	cmake -B build -G Ninja \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON \
-    -DCMAKE_INSTALL_PREFIX=/usr/local \
-    -DCMAKE_CXX_COMPILER=clang++ \
-    -DCMAKE_CXX_COMPILER_AR=/usr/bin/llvm-ar \
-    -DCMAKE_CXX_COMPILER_RANLIB=/usr/bin/llvm-ranlib \
-    -DLSFGVK_BUILD_UI=ON
-  cmake --build build
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_CXX_COMPILER=clang++ \
+		-DCMAKE_CXX_COMPILER_AR=/usr/bin/llvm-ar \
+		-DCMAKE_CXX_COMPILER_RANLIB=/usr/bin/llvm-ranlib \
+		-DLSFGVK_BUILD_UI=ON
+	cmake --build build
 }
 
 do_install() {
-	vmkdir usr/local/lib64
-	vmkdir usr/local/share/vulkan/implicit_layer.d
-	vmkdir usr/local/bin
-	vmkdir usr/local/share/icons/hicolor/256x256/apps
-	vmkdir usr/local/share/applications
+	vmkdir usr/lib64
+	vmkdir usr/share/vulkan/implicit_layer.d
+	vmkdir usr/bin
+	vmkdir usr/share/icons/hicolor/256x256/apps
+	vmkdir usr/share/applications
 
-	vcopy build/lsfg-vk-layer/liblsfg-vk-layer.so usr/local/lib64/liblsfg-vk-layer.so
+	vcopy build/lsfg-vk-layer/liblsfg-vk-layer.so usr/lib64/liblsfg-vk-layer.so
 
-	vcopy build/lsfg-vk-layer/VkLayer_LSFGVK_frame_generation.json usr/local/share/vulkan/implicit_layer.d/VkLayer_LSFGVK_frame_generation.json
+	vcopy build/lsfg-vk-layer/VkLayer_LSFGVK_frame_generation.json \
+		usr/share/vulkan/implicit_layer.d/VkLayer_LSFGVK_frame_generation.json
 
-	vinstall build/lsfg-vk-cli/lsfg-vk-cli  755 usr/local/bin
-	vinstall build/lsfg-vk-ui/lsfg-vk-ui    755 usr/local/bin
+	vinstall build/lsfg-vk-cli/lsfg-vk-cli 755 usr/bin
+	vinstall build/lsfg-vk-ui/lsfg-vk-ui    755 usr/bin
 
-	vinstall lsfg-vk-ui/resources/gay.pancake.lsfg-vk-ui.png 644 usr/local/share/icons/hicolor/256x256/apps
+	vinstall lsfg-vk-ui/resources/gay.pancake.lsfg-vk-ui.png \
+		644 usr/share/icons/hicolor/256x256/apps
 
-	vinstall lsfg-vk-ui/resources/gay.pancake.lsfg-vk-ui.desktop 644 usr/local/share/applications
+	vinstall lsfg-vk-ui/resources/gay.pancake.lsfg-vk-ui.desktop \
+		644 usr/share/applications
 }
