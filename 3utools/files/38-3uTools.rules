@@ -1,0 +1,6 @@
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{PRODUCT}=="5ac/128[0-9]/*|5ac/122[0-9]/*|5ac/f014/*|5ac/1881/*", TAG+="systemd"
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{PRODUCT}=="5ac/128[0-9]/*|5ac/122[0-9]/*|5ac/f014/*|5ac/1881/*", MODE="0666"
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{PRODUCT}=="5ac/12[9a][0-9a-f]/*|5ac/8600/*", TAG+="systemd"
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{PRODUCT}=="5ac/1881/*", ACTION=="add",    GROUP="plugdev"
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{PRODUCT}=="5ac/1881/*", ACTION=="bind",   GROUP="plugdev"
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{PRODUCT}=="5ac/1881/*", ACTION=="remove", GROUP="plugdev"

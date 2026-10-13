@@ -1,0 +1,9 @@
+#!/bin/sh
+case "${ACTION}" in
+post)
+	if [ -x /usr/bin/udevadm ]; then
+		/usr/bin/udevadm control --reload-rules || true
+		/usr/bin/udevadm trigger || true
+	fi
+	;;
+esac
