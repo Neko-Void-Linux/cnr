@@ -1,0 +1,59 @@
+# Template file for 'winboat'
+pkgname=winboat
+version=0.9.2
+revision=1
+archs="x86_64"
+hostmakedepends="binutils tar xz"
+depends="gtk+3 libnotify nss libXScrnSaver libXtst xdg-utils \
+ at-spi2-core libuuid libsecret libayatana-appindicator"
+short_desc="Run Windows apps on Linux natively"
+maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
+license="MIT"
+homepage="https://github.com/TibixDev/winboat"
+distfiles="https://github.com/TibixDev/winboat/releases/download/v${version}/winboat-${version}-amd64.deb"
+checksum=""
+
+nopie=yes
+nostrip=yes
+nodebug=yes
+noverifyrdeps=yes
+noshlibprovides=yes
+
+do_extract() {
+    ar x ${XBPS_SRCDISTDIR}/${pkgname}-${version}/winboat-${version}-amd64.deb
+    tar xf data.tar.*
+    rm -f data.tar.* control.tar.* debian-binary
+}
+
+do_install() {
+    # App completa en /opt/winboat
+    vmkdir opt
+    vcopy opt/winboat /opt/winboat
+
+    # Lanzador .desktop corregido (Exec usa el symlink de /usr/bin)
+    vmkdir usr/share/applications
+    cat > "${DESTDIR}/usr/share/applications/winboat.desktop" <<-EOF
+	[Desktop Entry]
+	Name=WinBoat
+	Exec=winboat %U
+	Terminal=false
+	Type=Application
+	Icon=winboat
+	StartupWMClass=winboat
+	Comment=Windows for Penguins
+	Categories=Utility;
+	EOF
+
+    # Icono
+    vmkdir usr/share/icons/hicolor/scalable/apps
+    vcopy usr/share/icons/hicolor/scalable/apps/winboat.svg \
+        /usr/share/icons/hicolor/scalable/apps
+
+    # Documentación
+    vmkdir usr/share/doc/winboat
+    vcopy usr/share/doc/winboat/changelog.gz /usr/share/doc/winboat
+
+    # Symlink /usr/bin/winboat -> /opt/winboat/winboat
+    vmkdir usr/bin
+    ln -sf /opt/winboat/winboat "${DESTDIR}/usr/bin/winboat"
+}
