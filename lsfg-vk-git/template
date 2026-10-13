@@ -24,18 +24,23 @@ do_build() {
     -DCMAKE_CXX_COMPILER_RANLIB=/usr/bin/llvm-ranlib \
     -DLSFGVK_BUILD_UI=ON
   cmake --build build
-  vmkdir ${DESTDIR}/usr/local/lib64
-  vmkdir ${DESTDIR}/usr/local/share/vulkan/implicit_layer.d
-  vmkdir ${DESTDIR}/usr/local/bin
-  vmkdir ${DESTDIR}/usr/local/share/icons/hicolor/256x256/apps
-  vmkdir ${DESTDIR}/usr/local/share/applications
 }
 
 do_install() {
-  vcopy build/lsfg-vk-layer/VkLayer_LSFGVK_frame_generation.json ${DESTDIR}/usr/local/lib64/liblsfg-vk-layer.so
-  vcopy build/lsfg-vk-layer/VkLayer_LSFGVK_frame_generation.json ${DESTDIR}/usr/local/share/vulkan/implicit_layer.d/VkLayer_LSFGVK_frame_generation.json
-  vbin build/lsfg-vk-cli/lsfg-vk-cli ${DESTDIR}/usr/local/bin/lsfg-vk-cli
-  vbin build/lsfg-vk-ui/lsfg-vk-ui ${DESTDIR}/usr/local/bin/lsfg-vk-ui
-  vcopy lsfg-vk-ui/resources/gay.pancake.lsfg-vk-ui.png ${DESTDIR}/usr/local/share/icons/hicolor/256x256/apps/gay.pancake.lsfg-vk-ui.png
-  vcopy lsfg-vk-ui/resources/gay.pancake.lsfg-vk-ui.desktop ${DESTDIR}/usr/local/share/applications/gay.pancake.lsfg-vk-ui.desktop
+	vmkdir usr/local/lib64
+	vmkdir usr/local/share/vulkan/implicit_layer.d
+	vmkdir usr/local/bin
+	vmkdir usr/local/share/icons/hicolor/256x256/apps
+	vmkdir usr/local/share/applications
+
+	vcopy build/lsfg-vk-layer/liblsfg-vk-layer.so usr/local/lib64/liblsfg-vk-layer.so
+
+	vcopy build/lsfg-vk-layer/VkLayer_LSFGVK_frame_generation.json usr/local/share/vulkan/implicit_layer.d/VkLayer_LSFGVK_frame_generation.json
+
+	vinstall build/lsfg-vk-cli/lsfg-vk-cli  755 usr/local/bin
+	vinstall build/lsfg-vk-ui/lsfg-vk-ui    755 usr/local/bin
+
+	vinstall lsfg-vk-ui/resources/gay.pancake.lsfg-vk-ui.png 644 usr/local/share/icons/hicolor/256x256/apps
+
+	vinstall lsfg-vk-ui/resources/gay.pancake.lsfg-vk-ui.desktop 644 usr/local/share/applications
 }
