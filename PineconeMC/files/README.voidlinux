@@ -1,0 +1,35 @@
+Instrucciones específicas para Void Linux - PineconeMC
+======================================================
+
+PineconeMC es un fork de Prism Launcher que añade soporte nativo para
+cuentas Ely.by (también puedes seguir usando cuentas Microsoft/Mojang).
+
+== Java ==
+
+Es posible que no tengas la versión correcta de Java instalada para ejecutar
+ciertas versiones de Minecraft. Para Minecraft 1.17 y superior instala
+openjdk17-jre; para versiones anteriores instala openjdk8-jre.
+
+Si quieres que el lanzador descargue Java automáticamente, instala
+openjdk17 (JDK completo, no solo JRE).
+
+== Problemas gráficos ==
+
+Si recibes un error que incluye "org.lwjgl.opengl.LinuxDisplay.getAvailableDisplayModes",
+puede que necesites instalar xrandr.
+
+== musl (Void musl) ==
+
+En musl, LWJGL 3.3.1 puede fallar debido a diferencias en el enlazado con glibc.
+Si el juego crashea al lanzar ciertas versiones:
+
+1. Haz clic derecho en la instancia y selecciona "Editar".
+2. Ve a la pestaña "Versiones" y selecciona LWJGL en la lista.
+3. Haz clic en "Set version" a la derecha y elige la versión 3.2.2.
+
+== Ely.by ==
+
+Para iniciar sesión con Ely.by:
+1. Ve a Ajustes → Cuentas → Añadir cuenta Ely.by
+2. Se abrirá el navegador para autenticación OAuth2 segura.
+3. Nunca se comparten tus credenciales con el lanzador.
