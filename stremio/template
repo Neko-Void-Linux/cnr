@@ -1,0 +1,36 @@
+pkgname=stremio
+version=4.4.168
+revision=1
+only_for_archs="x86_64"
+short_desc="Freedom to Stream"
+maintainer="JavierC"
+depends="nodejs mpv qt5-declarative qt5-quickcontrols qt5-quickcontrols2 qt5-webchannel qt5-webengine rubberband uchardet fdk-aac"
+hostmakedepends="tar xz wget"
+license="No me acuerdo"
+homepage="https://www.stremio.com/"
+nostrip=yes
+
+do_extract() {
+    mkdir -p ${DESTDIR}
+    wget -O ${XBPS_SRCDISTDIR}/${pkgname}-${version}/stremio_4.4.168-1_amd64.deb https://dl.strem.io/shell-linux/v4.4.168/stremio_4.4.168-1_amd64.deb
+    ar x ${XBPS_SRCDISTDIR}/${pkgname}-${version}/stremio_4.4.168-1_amd64.deb
+}
+
+do_install() {
+    tar xf data.tar.xz -C ${DESTDIR}
+
+    for size in 24 32 64 128; do
+        mkdir -p ${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps
+
+        mv ${DESTDIR}/opt/stremio/icons/smartcode-stremio_${size}.png         ${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps/brave-browser.png
+    done
+    for size in 24 32 64 128; do
+        mkdir -p ${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps
+
+        mv ${DESTDIR}/opt/stremio/icons/smartcode-stremio-tray_${size}.png         ${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps/brave-browser.png
+    done
+    mkdir -p ${DESTDIR}/usr/share/applications
+    mv ${DESTDIR}/opt/stremio/smartcode-stremio.desktop  ${DESTDIR}/usr/share/applications/smartcode-stremio.desktop
+    mkdir -p ${DESTDIR}/usr/bin
+    mv ${DESTDIR}/opt/stremio/stremio  ${DESTDIR}/usr/bin/stremio
+}
