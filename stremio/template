@@ -27,7 +27,7 @@ do_install() {
 	
 	mkdir -p ${DESTDIR}/usr/share/applications
 	mv ${DESTDIR}/opt/stremio/smartcode-stremio.desktop ${DESTDIR}/usr/share/applications/smartcode-stremio.desktop
-	patchelf --replace-needed libmpv.so.1 libmpv.so.2 "${DESTDIR}/usr/bin/stremio"
+	patchelf --replace-needed libmpv.so.1 libmpv.so.2 "${DESTDIR}/opt/stremio/stremio"
 	mkdir -p ${DESTDIR}/usr/bin
 	ln -sf /opt/stremio/stremio ${DESTDIR}/usr/bin/stremio
 	mkdir -p ${DESTDIR}/usr/lib
