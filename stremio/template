@@ -1,6 +1,6 @@
 pkgname=stremio
 version=4.4.168
-revision=2
+revision=3
 only_for_archs="x86_64"
 short_desc="Freedom to Stream"
 maintainer="JavierC"
