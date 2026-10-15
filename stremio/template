@@ -1,6 +1,6 @@
 pkgname=stremio
 version=4.4.168
-revision=1
+revision=2
 only_for_archs="x86_64"
 short_desc="Freedom to Stream"
 maintainer="JavierC"
@@ -22,12 +22,12 @@ do_install() {
     for size in 24 32 64 128; do
         mkdir -p ${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps
 
-        mv ${DESTDIR}/opt/stremio/icons/smartcode-stremio_${size}.png         ${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps/brave-browser.png
+        mv ${DESTDIR}/opt/stremio/icons/smartcode-stremio_${size}.png         ${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps/smartcode-stremio.png
     done
     for size in 24 32 64 128; do
         mkdir -p ${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps
 
-        mv ${DESTDIR}/opt/stremio/icons/smartcode-stremio-tray_${size}.png         ${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps/brave-browser.png
+        mv ${DESTDIR}/opt/stremio/icons/smartcode-stremio-tray_${size}.png         ${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps/smartcode-stremio-tray.png
     done
     mkdir -p ${DESTDIR}/usr/share/applications
     mv ${DESTDIR}/opt/stremio/smartcode-stremio.desktop  ${DESTDIR}/usr/share/applications/smartcode-stremio.desktop
