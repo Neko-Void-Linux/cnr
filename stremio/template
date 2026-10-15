@@ -30,7 +30,7 @@ do_install() {
 	patchelf --replace-needed libmpv.so.1 libmpv.so.2 "${DESTDIR}/usr/bin/stremio"
 	mkdir -p ${DESTDIR}/usr/bin
 	ln -sf /opt/stremio/stremio ${DESTDIR}/usr/bin/stremio
-
+	mkdir -p ${DESTDIR}/usr/lib
 	if [ -f /usr/lib/libmpv.so.2 ]; then
 		ln -sf /usr/lib/libmpv.so.2 "${DESTDIR}/usr/lib/libmpv.so.1"
 	fi
