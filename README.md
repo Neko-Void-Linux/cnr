@@ -8,10 +8,11 @@ sudo xbps-install  -S --repository=https://github.com/Neko-Void-Linux/repo-neko/
 ```
 ### Run on void-packages for compile (goverlay-bin and mangowc-latest)
 ```
-echo "#nnothing" >> common/build-style/none.sh
-echo "libscenefx-0.5.so scenefx-latest-0.5_1" >> common/shlibs
-echo "libQt6Pas.so.6 libqt6pas-bin-6.2.10_1" >> common/shlibs
-echo "libcrypto.so.1.1 libssl1.1">> common/shlibs
+sh -c "cat << EOF >> common/shlibs
+libscenefx-0.5.so scenefx-0.5_1
+libQt6Pas.so.6 qt6pas-6.2.10_1
+libcrypto.so.1.1 libssl1.1-1.1.1w_1
+EOF"
 ```  
 ### FOR UPDATE OR ADD PACKAGES IN REPO RUN ACTION WORKFLOW  (USE GITHUB MIGRATION PLEASE) 
 https://github.com/Neko-Void-Linux/repo-neko/actions/workflows/Migration.yml
