@@ -11,7 +11,7 @@ maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
 license="MIT"
 homepage="https://github.com/TibixDev/winboat"
 distfiles="https://github.com/TibixDev/winboat/releases/download/v${version}/winboat-${version}-amd64.deb"
-checksum=""
+checksum="c01bfbabef6c1c57895dfb3165d4ca7c6912d2f63c67f61b2c2dd3e69449f0ba"
 
 nopie=yes
 nostrip=yes
