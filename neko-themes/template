@@ -1,6 +1,6 @@
 pkgname=neko-themes
 version=7.8
-revision=1
+revision=2
 archs=x86_64
 wrksrc="neko-themes"
 short_desc="Colección de temas"
