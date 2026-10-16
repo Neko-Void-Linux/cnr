@@ -4,6 +4,7 @@ revision=1
 archs=x86_64
 wrksrc="neko-themes"
 short_desc="Colección de temas"
+makedepends="git"
 maintainer="JavierC"
 license="GPL-3.0-or-later"
 homepage="https://github.com/Neko-Void-Linux/neko-themes"
