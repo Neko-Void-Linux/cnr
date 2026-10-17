@@ -1,16 +1,16 @@
 pkgname=kyoz
-version=2026
-revision=2
+version=2026.3
+revision=3
 build_style=zig-build
-hostmakedepends="zig"
+hostmakedepends="zig git"
+makedepends="zig git"
 short_desc="Wrapper for xbps package manager"
 maintainer="Javierc"
 license="WTFPL"
-homepage="https://codeberg.org/javiercplus/kyoz"
-distfiles="https://codeberg.org/javiercplus/kyoz/archive/${version}.tar.gz"
-checksum=13b96b345dd8a2209fbe3a7eb3f617b7c8effbe98c27c889b634beaec4ace04c
+homepage="https://github.com/Neko-Void-Linux/kyoz"
 
 do_build() {
+    git clone https://github.com/Neko-Void-Linux/kyoz.git .
     zig build-exe kyo.zig -mcpu=baseline -O ReleaseSafe
 }
 
