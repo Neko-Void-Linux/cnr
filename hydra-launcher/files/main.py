@@ -31,8 +31,6 @@ logger = logging.getLogger("hydra.rpc")
 
 def parse_cli_args(argv):
     if len(argv) >= 6:
-        # Legacy format:
-        # [script, torrent_port, http_port, rpc_password, initial_download, initial_seeding]
         torrent_port_arg = argv[1]
         rpc_password_arg = argv[3]
         initial_download_arg = argv[4]
@@ -45,8 +43,6 @@ def parse_cli_args(argv):
         )
 
     if len(argv) >= 5:
-        # Stdio format with RPC password:
-        # [script, torrent_port, rpc_password, initial_download, initial_seeding]
         torrent_port_arg = argv[1]
         rpc_password_arg = argv[2]
         initial_download_arg = argv[3]
@@ -59,8 +55,6 @@ def parse_cli_args(argv):
         )
 
     if len(argv) >= 4:
-        # Backward-compatible stdio format (no RPC password):
-        # [script, torrent_port, initial_download, initial_seeding]
         torrent_port_arg = argv[1]
         initial_download_arg = argv[2]
         initial_seeding_arg = argv[3]
@@ -83,7 +77,6 @@ downloads = {}
 downloads_lock = threading.RLock()
 metadata_semaphore = threading.BoundedSemaphore(value=2)
 
-# This can be streamed down from Node
 downloading_game_id = -1
 current_download_limit = None
 
@@ -426,7 +419,7 @@ def seed_status():
         if not response:
             continue
 
-        if response.get("status") == 5:  # Torrent seeding check
+        if response.get("status") == 5:
             seed_payload.append(
                 {
                     "gameId": game_id,
