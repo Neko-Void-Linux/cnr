@@ -1,7 +1,6 @@
 pkgname=kyoz
 version=2026.3
 revision=3
-build_style=zig-build
 hostmakedepends="zig-nk git"
 makedepends="zig-nk git"
 short_desc="Wrapper for xbps package manager"
