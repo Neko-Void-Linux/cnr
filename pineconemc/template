@@ -1,6 +1,6 @@
 pkgname=pineconemc
 version=11.1.1
-revision=1
+revision=2
 build_style=cmake
 configure_args="-DLauncher_BUILD_PLATFORM=void
  -DLauncher_QT_VERSION_MAJOR=6
@@ -14,7 +14,7 @@ makedepends="qt6-base-devel qt6-qt5compat-devel qt6-svg-devel zlib-devel
 depends="virtual?java-runtime qt6-svg qt6-imageformats qt6-plugin-tls-openssl
  hicolor-icon-theme desktop-file-utils xrandr"
 short_desc="Custom Minecraft launcher with Ely.by accounts and skins support"
-maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
+maintainer="ANOMALI0x00"
 license="GPL-3.0-only"
 homepage="https://github.com/ElyPrismLauncher/Launcher"
 distfiles="https://github.com/ElyPrismLauncher/Launcher/releases/download/${version}/PineconeMC-${version}.tar.gz"
