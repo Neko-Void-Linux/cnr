@@ -1,0 +1,33 @@
+pkgname=pineconemc
+version=11.1.1
+revision=1
+build_style=cmake
+configure_args="-DLauncher_BUILD_PLATFORM=void
+ -DLauncher_QT_VERSION_MAJOR=6
+ -DENABLE_LTO=OFF
+ -DBUILD_TESTING=OFF"
+wrksrc="PineconeMC-${version}"
+hostmakedepends="cmake ninja extra-cmake-modules pkg-config openjdk17 scdoc qt6-tools"
+makedepends="qt6-base-devel qt6-qt5compat-devel qt6-svg-devel zlib-devel
+ quazip-qt6-devel qt6-networkauth-devel cmark-devel libgamemode-devel
+ qrencode-devel libarchive-devel tomlplusplus-devel"
+depends="virtual?java-runtime qt6-svg qt6-imageformats qt6-plugin-tls-openssl
+ hicolor-icon-theme desktop-file-utils xrandr"
+short_desc="Custom Minecraft launcher with Ely.by accounts and skins support"
+maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
+license="GPL-3.0-only"
+homepage="https://github.com/ElyPrismLauncher/Launcher"
+distfiles="https://github.com/ElyPrismLauncher/Launcher/releases/download/${version}/PineconeMC-${version}.tar.gz"
+checksum=ef286101f6ecde639bc79d75306147915dd05773fceddf04876d25f295a973ce
+
+case "$XBPS_TARGET_MACHINE" in
+	armv*) broken="https://github.com/ElyPrismLauncher/Launcher/issues" ;;
+esac
+
+pre_configure() {
+	export JAVA_HOME=/usr/lib/jvm/openjdk17
+}
+
+post_install() {
+	ln -sf elyprismlauncher "${DESTDIR}/usr/bin/pineconemc"
+}
