@@ -1,6 +1,6 @@
 pkgname=artcraft-launcher
-version=0.4.1
-revision=1
+version=0.5.1
+revision=2
 archs="x86_64"
 wrksrc="artcraft-launcher-${version}-linux-x86_64"
 depends="hicolor-icon-theme libxkbcommon ca-certificates"
@@ -9,7 +9,7 @@ maintainer="ANOMALI0x00"
 license="MIT, Apache-2.0"
 homepage="https://getartcraft.com/apps"
 distfiles="https://github.com/storytold/craft-launcher/releases/download/v${version}/artcraft-launcher-${version}-linux-x86_64.tar.gz"
-checksum=2a2ee51d69bdb8174a2a48f30297fdbfa460b6e8737c3566a1b6ec46f831fa40
+checksum=6cb893c5635e30f35629117c6992e1ea120e0bb6c17f0432e2c11387f3a7858a
 nostrip=yes
 
 do_install() {
