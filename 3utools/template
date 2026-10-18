@@ -1,63 +1,74 @@
-# Template file for '3utools'
 pkgname=3utools
 version=9.03.003
 revision=1
 archs="x86_64"
-
-depends="hicolor-icon-theme libglvnd usbmuxd usbutils psmisc"
-
-hostmakedepends="binutils tar xz patchelf file"
+hostmakedepends="bsdtar patchelf file"
+depends="hicolor-icon-theme libglvnd usbmuxd usbutils psmisc desktop-file-utils"
 short_desc="Apple device management and jailbreak tool"
-maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
-license="custom:proprietary"
+maintainer="ANOMALI0x00"
+license="custom:Proprietary"
 homepage="https://www.3u.com"
-
 distfiles="https://dl.3u.com/update/v900/dl/linux/x64/com.3u.3utools_${version}_amd64.deb"
 checksum=3431e97e5b2dde0c1f8365ef5e0c15d79a11572d58dc0236029777a76b596fef
-nopie_files="/opt/apps/com.3u.3utools/libexec/QtWebEngineProcess"
+nostrip=yes
+nopie=yes
+noshlibprovides=yes
+noverifyrdeps=yes
 
 do_extract() {
-	ar x ${XBPS_SRCDISTDIR}/${pkgname}-${version}/com.3u.3utools_${version}_amd64.deb
-	tar xf data.tar.xz
+	bsdtar -xf "${XBPS_SRCDISTDIR}/${pkgname}-${version}/com.3u.3utools_${version}_amd64.deb" -C "${wrksrc}"
+	local _data
+	_data=$(ls "${wrksrc}"/data.tar.* 2>/dev/null | head -n1)
+	if [ -z "${_data}" ]; then
+		msg_error "No se encontró data.tar.* dentro del .deb\n"
+	fi
+	bsdtar -xf "${_data}" -C "${wrksrc}"
+	rm -f "${wrksrc}"/control.tar.* "${wrksrc}"/debian-binary "${wrksrc}"/data.tar.*
 }
 
 do_install() {
-	vcopy opt .
-	vinstall usr/share/applications/com.3u.3utools.desktop 644 \
-		usr/share/applications
-	vinstall usr/share/icons/hicolor/scalable/apps/com.3u.3utools.svg 644 \
-		usr/share/icons/hicolor/scalable/apps
-	vinstall ${FILESDIR}/38-3uTools.rules 644 usr/lib/udev/rules.d
+	cp -a opt "${DESTDIR}/"
+
+	if [ -f usr/share/applications/com.3u.3utools.desktop ]; then
+		vinstall usr/share/applications/com.3u.3utools.desktop 644 usr/share/applications
+	fi
+
+	if [ -f usr/share/icons/hicolor/scalable/apps/com.3u.3utools.svg ]; then
+		vinstall usr/share/icons/hicolor/scalable/apps/com.3u.3utools.svg 644 usr/share/icons/hicolor/scalable/apps
+	fi
+
+	vinstall "${FILESDIR}/38-3uTools.rules" 644 usr/lib/udev/rules.d
 }
 
 post_install() {
 	local appdir="${DESTDIR}/opt/apps/com.3u.3utools"
 	local libdir="${appdir}/lib"
-	local abspath="/opt/apps/com.3u.3utools/lib:/usr/lib:/lib"
+	local rpath="/opt/apps/com.3u.3utools/lib:/usr/lib:/lib"
 
-	# 1. Arreglar todos los ELF ejecutables del paquete
-	#    (3uTools, libexec/QtWebEngineProcess, etc.)
-	find "$appdir" -type f -perm -u+x -exec sh -c '
-		for f; do
-			file -b "$f" | grep -q ELF || continue
-			patchelf --set-interpreter /usr/lib/ld-linux-x86-64.so.2 "$f" 2>/dev/null || true
-			for lib in $(patchelf --print-needed "$f" 2>/dev/null | grep "^\./lib/"); do
-				patchelf --replace-needed "$lib" "$(basename "$lib")" "$f" 2>/dev/null || true
-			done
-			patchelf --force-rpath --set-rpath "'"$abspath"'" "$f" 2>/dev/null || true
+	if [ ! -d "$appdir" ]; then
+		return 0
+	fi
+
+	chmod -R u+w "$appdir"
+
+	find "$appdir" -type f -perm -u+x -print0 | while IFS= read -r -d '' f; do
+		file -b "$f" | grep -q ELF || continue
+		patchelf --set-interpreter /lib64/ld-linux-x86-64.so.2 "$f" 2>/dev/null || true
+		patchelf --print-needed "$f" 2>/dev/null | grep '^\./lib/' | while read -r lib; do
+			patchelf --replace-needed "$lib" "$(basename "$lib")" "$f" 2>/dev/null || true
 		done
-	' sh {} +
-
-	# 2. Arreglar el RPATH de todas las librerías empaquetadas
-	for so in "$libdir"/*.so*; do
-		[ -f "$so" ] || continue
-		patchelf --force-rpath --set-rpath "$abspath" "$so" 2>/dev/null || true
+		patchelf --force-rpath --set-rpath "$rpath" "$f" 2>/dev/null || true
 	done
 
-	# 3. Eliminar libc y ld-linux empaquetados (causan el conflicto GLIBC_2.38)
-	rm -f "$libdir/libc.so.6" "$libdir/ld-linux-x86-64.so.2"
+	if [ -d "$libdir" ]; then
+		find "$libdir" -maxdepth 1 -type f -name '*.so*' -print0 | while IFS= read -r -d '' so; do
+			patchelf --force-rpath --set-rpath "$rpath" "$so" 2>/dev/null || true
+		done
+		rm -f "$libdir/libc.so.6" "$libdir/ld-linux-x86-64.so.2"
+	fi
 
-	# 4. Mejorar el nombre visible en el menú
-	sed -i 's/^Name=com\.3u\.3utools$/Name=3uTools/' \
-		"${DESTDIR}/usr/share/applications/com.3u.3utools.desktop"
+	local dfile="${DESTDIR}/usr/share/applications/com.3u.3utools.desktop"
+	if [ -f "$dfile" ]; then
+		sed -i 's/^Name=.*/Name=3uTools/' "$dfile"
+	fi
 }
