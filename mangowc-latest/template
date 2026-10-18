@@ -1,5 +1,5 @@
 pkgname=mangowc-latest
-version=0.18.0
+version=0.18.2
 revision=2
 conf_files="/etc/mango/config.conf"
 build_style=meson
@@ -12,7 +12,7 @@ license="GPL-3.0-or-later"
 homepage="https://github.com/mangowm/mango"
 changelog="https://github.com/mangowm/mango/releases"
 distfiles="https://github.com/Neko-Void-Linux/mango/releases/download/latest/mango-main.zip"
-checksum=56d44692222704f66fd085ed48b0b5ab0c3976ca1b42968d392ae382f5eddb11
+checksum=66745d394a36d15e52cade9bdf579f3162cc384238eb972697b28fc6f32256d5
 
 build_options="xwayland"
 desc_option_xwayland="Enable Xwayland support"
