@@ -1,73 +1,58 @@
-# Template file for 'itch'
 pkgname=itch
 version=26.22.0
-revision=1
+revision=2
 archs="x86_64"
 short_desc="Installer and launcher for itch.io games"
-maintainer="ANOMALI0x00 <ANOMALI0x00@users.noreply.github.com>"
+maintainer="ANOMALI0x00"
 license="MIT"
 homepage="https://itch.io/app"
 distfiles="https://github.com/itchio/itch/releases/download/v${version}/itch-v${version}-linux-amd64.tar.gz"
 checksum=462408b2ef3dbebcd3c110040e0e58bd2ac8e12b0bd7995be87d393c6df0bda2
-
-nocheck=1
 noshlibprovides=yes
-
-depends="gtk+3 nss libXScrnSaver alsa-lib libgbm libnotify xdg-utils at-spi2-core"
-
-do_build() {
-	:
-}
-
-do_extract() {
-	bsdtar -xf "${XBPS_SRCDISTDIR}/${pkgname}-${version}/itch-v${version}-linux-amd64.tar.gz" \
-		-C "${wrksrc}"
-}
+depends="gtk+3 nss libXScrnSaver alsa-lib libgbm libnotify xdg-utils
+ at-spi2-core hicolor-icon-theme desktop-file-utils"
 
 do_install() {
-	# El tarball extrae PLANO en ${wrksrc}: el binario 'itch' y 'resources/' quedan
-	# al mismo nivel, sin un directorio 'itch/' contenedor.
 	vmkdir opt/itch
-	vcopy "${wrksrc}/*" /opt/itch/
+	cp -a ./. "${DESTDIR}/opt/itch/"
 	chmod 0755 "${DESTDIR}/opt/itch/itch"
 
 	vmkdir usr/bin
 	ln -sf /opt/itch/itch "${DESTDIR}/usr/bin/itch"
 
-	# --- Icono: buscar en las rutas reales del tarball de itch ---
-	# itch guarda sus iconos en resources/app/src/static/images/
 	local _icon=""
-	if [ -f "${wrksrc}/resources/app/src/static/images/tray/itch.png" ]; then
-		_icon="${wrksrc}/resources/app/src/static/images/tray/itch.png"
-	elif [ -f "${wrksrc}/resources/app/src/static/images/window/itch/icon.png" ]; then
-		_icon="${wrksrc}/resources/app/src/static/images/window/itch/icon.png"
-	elif [ -f "${wrksrc}/itch.png" ]; then
-		_icon="${wrksrc}/itch.png"
+	for cand in \
+		resources/app/src/static/images/tray/itch.png \
+		resources/app/src/static/images/window/itch/icon.png \
+		itch.png; do
+		if [ -f "$cand" ]; then
+			_icon="$cand"
+			break
+		fi
+	done
+
+	if [ -n "$_icon" ]; then
+		vinstall "$_icon" 644 usr/share/icons/hicolor/256x256/apps itch.png
 	fi
 
-	if [ -n "${_icon}" ]; then
-		vmkdir usr/share/icons/hicolor/256x256/apps
-		vinstall "${_icon}" 644 usr/share/icons/hicolor/256x256/apps itch.png
-	else
-		msg_warn "No se encontró ningún icono de itch en el tarball; el menú no mostrará icono.\n"
-	fi
-
-	# --- Archivo .desktop ---
 	vmkdir usr/share/applications
-	cat > "${DESTDIR}/usr/share/applications/itch.desktop" <<-EOF
-	[Desktop Entry]
-	Name=itch
-	Comment=Installer and launcher for itch.io games
-	Exec=itch %U
-	Icon=itch
-	Terminal=false
-	Type=Application
-	Categories=Game;Utility;
-	MimeType=x-scheme-handler/itchio;x-scheme-handler/itch;
-	EOF
+	cat > "${DESTDIR}/usr/share/applications/itch.desktop" << 'EOF'
+[Desktop Entry]
+Name=itch
+Comment=Installer and launcher for itch.io games
+Exec=itch %U
+Icon=itch
+Terminal=false
+Type=Application
+StartupWMClass=itch
+Categories=Game;Utility;
+MimeType=x-scheme-handler/itchio;x-scheme-handler/itch;
+EOF
 
-	# --- Licencia ---
-	if [ -f "${wrksrc}/LICENSE.electron.txt" ]; then
-		vlicense "${wrksrc}/LICENSE.electron.txt"
+	if [ -f LICENSE.electron.txt ]; then
+		vlicense LICENSE.electron.txt
+	fi
+	if [ -f LICENSE ]; then
+		vlicense LICENSE
 	fi
 }
