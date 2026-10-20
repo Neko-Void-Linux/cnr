@@ -1,0 +1,40 @@
+pkgname=repomix
+version=1.18.1
+revision=1
+archs="x86_64"
+create_wrksrc=yes
+hostmakedepends="nodejs"
+depends="nodejs"
+short_desc="Packs repository contents into a single AI-friendly file"
+maintainer="ANOMALI0x00"
+license="MIT"
+homepage="https://github.com/yamadashy/repomix"
+distfiles="https://github.com/yamadashy/repomix/archive/refs/tags/v${version}.tar.gz"
+checksum=8d6c2f1c6ffc249c61d5c2f8cb4f15b95c7dc4d7d52dbfe0dfefa66034dbf8ed
+
+do_build() {
+	cd "repomix-${version}"
+	npm install --no-audit --no-fund
+	npm run build
+}
+
+do_install() {
+	cd "repomix-${version}"
+	vmkdir usr/lib/repomix
+	vcopy lib usr/lib/repomix
+	vcopy bin usr/lib/repomix
+	vcopy package.json usr/lib/repomix
+
+	npm prune --omit=dev
+	vcopy node_modules usr/lib/repomix
+
+	vmkdir usr/bin
+	cat > "${DESTDIR}/usr/bin/repomix" <<-'EOF'
+	#!/bin/sh
+	exec node /usr/lib/repomix/bin/repomix.cjs "$@"
+	EOF
+	chmod 0755 "${DESTDIR}/usr/bin/repomix"
+
+	vmkdir "usr/share/licenses/${pkgname}"
+	vcopy LICENSE "usr/share/licenses/${pkgname}"
+}
