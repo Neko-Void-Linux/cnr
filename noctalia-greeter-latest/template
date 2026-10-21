@@ -5,7 +5,7 @@ build_style=meson
 hostmakedepends="git pkg-config"
 makedepends="git cairo-devel fontconfig-devel freetype-devel
  json-c++ libepoxy-devel libglvnd-devel librsvg-devel
- libwebp-devel libjxl libxkbcommon-devel MesaLib-devel
+ libwebp-devel libjxl-devel libxkbcommon-devel MesaLib-devel
  pango-devel stb wayland-devel wayland-protocols
  tomlplusplus-devel wlroots0.20-devel"
 depends="cage dbus greetd polkit wlr-randr"
