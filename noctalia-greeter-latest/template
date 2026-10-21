@@ -10,7 +10,7 @@ makedepends="cairo-devel fontconfig-devel freetype-devel
  tomlplusplus-devel wlroots0.20-devel"
 depends="cage dbus greetd polkit wlr-randr"
 short_desc="Noctalia themed greeter for greetd"
-maintainer="Haris <plavpxl@proton.me>"
+maintainer="JavierC"
 license="MIT"
 homepage="https://github.com/noctalia-dev/noctalia-greeter"
 do_fetch(){
