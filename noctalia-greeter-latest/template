@@ -3,7 +3,7 @@ version=1.7.0
 revision=1
 build_style=meson
 hostmakedepends="git pkg-config"
-makedepends="cairo-devel fontconfig-devel freetype-devel
+makedepends="git cairo-devel fontconfig-devel freetype-devel
  json-c++ libepoxy-devel libglvnd-devel librsvg-devel
  libwebp-devel libxkbcommon-devel MesaLib-devel
  pango-devel stb wayland-devel wayland-protocols
