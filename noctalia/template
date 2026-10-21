@@ -16,5 +16,5 @@ license="MIT"
 homepage="https://github.com/noctalia-dev/noctalia"
 patches="disable-native-optimizations.patch"
 do_fetch(){
-git clone --depth 1 https://github.com/Neko-Void-Linux/noctalia.git .
+git clone --depth 1 https://github.com/Neko-Void-Linux/noctalia.git "${pkgname}-${version}"
 }
