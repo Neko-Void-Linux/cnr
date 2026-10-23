@@ -1,0 +1,24 @@
+# Template file for 'vary'
+pkgname=vary
+version=0.5.0
+revision=1
+build_style=cargo
+hostmakedepends="git"
+depends="git"
+short_desc="Void User Repository (VUR) helper and build automator"
+maintainer="Dicov <SrDicov@gmail.com>"
+license="GPL-3.0-or-later"
+homepage="https://github.com/SrDicov/Vary"
+distfiles="https://github.com/SrDicov/Vary/archive/refs/tags/v${version}.tar.gz"
+checksum=3a15e967111e433ecbf11fb3d3a18c058bbca28b3caf62312a7b181acd30547c
+
+do_build() {
+	cargo build --release
+}
+
+post_install() {
+	vdoc README.md
+	vdoc docs/AUR2XBPS.md
+	vdoc docs/VURINFO.md
+	vinstall etc/vary.conf.example 644 usr/share/examples/vary
+}

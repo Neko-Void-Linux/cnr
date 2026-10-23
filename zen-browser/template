@@ -1,0 +1,44 @@
+# Template file for 'zen-browser'
+pkgname=zen-browser
+version=1.23.4b
+revision=1
+archs="x86_64"
+depends="desktop-file-utils hicolor-icon-theme ca-certificates ffmpeg gtk+3
+ libXtst libpulseaudio nss"
+short_desc="Calmer internet browser based on Firefox"
+maintainer="Dicov <SrDicov@gmail.com>"
+license="MPL-2.0"
+homepage="https://zen-browser.app"
+distfiles="https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz>zen-linux-${version}.tar.xz"
+checksum=ba81dd70af70d645f2f0a692f7fa4510f819290abfd8d8e60273d3d5a60d0536
+nodebug=yes
+conflicts="zen-browser>=0"
+provides="zen-browser-${version}_${revision}"
+replaces="zen-browser>=0"
+nostrip=yes
+
+do_install() {
+	vmkdir usr/lib/zen-browser
+	vcopy "*" usr/lib/zen-browser
+
+	vmkdir usr/bin
+	printf '#!/bin/sh\nexec /usr/lib/zen-browser/zen "$@"\n' \
+		> ${DESTDIR}/usr/bin/zen
+	chmod 755 ${DESTDIR}/usr/bin/zen
+	rm -f ${DESTDIR}/usr/lib/zen-browser/zen-bin
+	ln -s /usr/bin/zen ${DESTDIR}/usr/lib/zen-browser/zen-bin
+
+	vmkdir usr/lib/zen-browser/browser/defaults/preferences
+	vmkdir usr/lib/zen-browser/distribution
+	vinstall "${FILESDIR}/vendor.js" 644 usr/lib/zen-browser/browser/defaults/preferences
+	vinstall "${FILESDIR}/distribution.ini" 644 usr/lib/zen-browser/distribution
+
+	for s in 16 32 48 64 128; do
+		vinstall browser/chrome/icons/default/default${s}.png 644 \
+			usr/share/icons/hicolor/${s}x${s}/apps zen-browser.png
+	done
+	vinstall browser/chrome/icons/default/default16.png 644 \
+		usr/share/icons/hicolor/symbolic/apps zen-browser-symbolic.png
+
+	vinstall ${FILESDIR}/zen.desktop 644 usr/share/applications
+}

@@ -1,0 +1,59 @@
+# Template file for 'geforcenow'
+pkgname=geforcenow
+version=2.0.89.141
+revision=1
+archs="x86_64"
+build_style=fetch
+hostmakedepends="ostree"
+depends="alsa-lib at-spi2-atk at-spi2-core atk cairo dbus-libs expat
+ eudev-libudev gdk-pixbuf glib gtk+3 libatomic libcups libdrm libgbm libglvnd
+ libpulseaudio libsecret libstdc++ libva libX11 libXau libXcomposite libXcursor
+ libXdamage libXdmcp libXext libXfixes libXi libxkbcommon libxcb libXrandr
+ libXrender libXtst nspr nss pango vulkan-loader wayland zlib"
+short_desc="NVIDIA GeForce NOW cloud gaming client"
+maintainer="Dicov <SrDicov@gmail.com>"
+license="custom:Proprietary"
+homepage="https://www.nvidia.com/en-us/geforce-now/"
+_site="https://international.download.nvidia.com/GFNLinux/flatpak"
+_repo="${_site}/geforcenow_repo"
+_ref="app/com.nvidia.geforcenow/x86_64/master"
+_commit=f04023919e48360fa55cc550f79b1041c1725680d30414e5bda9fd73ef26d324
+nostrip=yes
+nodebug=yes
+noshlibprovides=yes
+noverifyrdeps=yes
+nopie=yes
+
+do_fetch() {
+	local repo="$XBPS_SRCDISTDIR/${pkgname}-${version}/ostree"
+
+	rm -rf "$repo" "$wrksrc"
+	mkdir -p "$repo"
+	ostree init --repo="$repo" --mode=archive
+	ostree remote add --repo="$repo" --no-gpg-verify gfn "$_repo"
+	ostree pull --repo="$repo" gfn "${_ref}@${_commit}"
+	ostree checkout --user-mode --repo="$repo" "$_ref" "$wrksrc"
+}
+
+do_install() {
+	vlicense "${FILESDIR}/LICENSE"
+	vmkdir usr/lib/geforcenow
+	for dir in cef mall nvc nvtelemetry; do
+		vcopy "files/${dir}" usr/lib/geforcenow
+	done
+	vinstall files/share/applications/com.nvidia.geforcenow.desktop 644 \
+		usr/share/applications
+	vinstall files/share/icons/hicolor/512x512/apps/com.nvidia.geforcenow.png \
+		644 usr/share/icons/hicolor/512x512/apps
+
+	vsed -i "${DESTDIR}/usr/lib/geforcenow/cef/Resources/GeForceNOW.json" \
+		-e 's/"nv-startup-autoupdate=true"/"nv-startup-autoupdate=false"/'
+	vsed -i "${DESTDIR}/usr/share/applications/com.nvidia.geforcenow.desktop" \
+		-e 's/^Exec=.*/Exec=geforcenow %u/'
+	printf '\n%s\n' 'MimeType=x-scheme-handler/geforcenow;' \
+		>> "${DESTDIR}/usr/share/applications/com.nvidia.geforcenow.desktop"
+
+	vmkdir usr/bin
+	vbin "${FILESDIR}/geforcenow" geforcenow
+	chmod 0755 "${DESTDIR}/usr/bin/geforcenow"
+}

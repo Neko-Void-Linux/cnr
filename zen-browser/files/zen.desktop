@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Zen Browser
+GenericName=Web Browser
+Comment=A calmer internet
+Exec=zen %u
+Icon=zen-browser
+Terminal=false
+Type=Application
+Categories=Network;WebBrowser;
+MimeType=text/html;text/xml;application/xhtml+xml;application/xml;x-scheme-handler/http;x-scheme-handler/https;
+StartupWMClass=zen

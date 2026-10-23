@@ -1,0 +1,54 @@
+# Template file for 'brave-origin'
+pkgname=brave-origin
+version=1.98.60
+revision=1
+archs="x86_64"
+create_wrksrc=yes
+hostmakedepends="unzip"
+depends="alsa-lib dbus-libs gtk+3 hicolor-icon-theme libcups libpulseaudio
+ libva libXScrnSaver libXtst nss liberation-fonts-ttf xdg-utils
+ desktop-file-utils"
+short_desc="Brave Origin web browser"
+maintainer="datfooldive <datfooldive@gmail.com>"
+license="MPL-2.0"
+homepage="https://brave.com"
+distfiles="https://github.com/brave/brave-browser/releases/download/v${version}/brave-origin-${version}-linux-amd64.zip"
+checksum=39a69cf12b5787f789d0a0b013f32253bddc9004d03e36c679a8daa61821b6e8
+replaces="brave-origin>=0"
+nostrip=yes
+nopie=yes
+noshlibprovides=yes
+
+_do_install_icon() {
+	local size="$1"
+
+	vinstall "product_logo_${size}.png" 644 \
+		"usr/share/icons/hicolor/${size}x${size}/apps" brave-origin.png
+}
+
+do_install() {
+	local appdir="usr/lib/brave-origin"
+
+	vmkdir ${appdir}
+	vcopy "${wrksrc}/*" "${appdir}"
+
+	rm -rf "${DESTDIR}/${appdir}/cron"
+	rm -rf "${DESTDIR}/${appdir}/apparmor.d"
+
+	chmod 755 "${DESTDIR}/${appdir}/brave"
+	chmod 755 "${DESTDIR}/${appdir}/brave-origin"
+	chmod 755 "${DESTDIR}/${appdir}/chrome-sandbox"
+	chmod 755 "${DESTDIR}/${appdir}/chrome_crashpad_handler"
+	chmod 755 "${DESTDIR}/${appdir}/chrome-management-service"
+
+	vmkdir usr/bin
+	ln -sfr "${DESTDIR}/${appdir}/brave-origin" \
+		"${DESTDIR}/usr/bin/brave-origin"
+
+	for size in 16 24 32 48 64 128 256; do
+		_do_install_icon "$size"
+	done
+
+	vmkdir usr/share/applications
+	vinstall "${FILESDIR}/brave-origin.desktop" 644 usr/share/applications
+}
