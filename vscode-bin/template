@@ -1,6 +1,6 @@
 pkgname=vscode-bin
-version=1.142.0
-revision=1
+version=1.143.1
+revision=2
 archs="x86_64"
 nostrip=yes
 nopie=yes
@@ -12,10 +12,10 @@ short_desc="Visual Studio Code (official Microsoft binary release)"
 maintainer="ANOMALI0x00"
 license="custom:Unfree"
 homepage="https://code.visualstudio.com"
-_commit=6d62b1d5dace93a33b3a6d3eca1317bd5e15bcb1
-_timestamp=1792034917
+_commit=e646868227c3e3a9e3f24277c8c7220be42c0be7
+_timestamp=1792691793
 distfiles="https://vscode.download.prss.microsoft.com/dbazure/download/stable/${_commit}/code-stable-x64-${_timestamp}.tar.gz"
-checksum=fcc1ccb435685adcc748287bbde524589569deedb6b4ad5560071583cbe00ae0
+checksum=48f658052e54e020a1c1be7b37ac0f9ae39f07e8ccda805c63f053cfda72b2be
 
 do_install() {
 	vmkdir usr/lib/code
