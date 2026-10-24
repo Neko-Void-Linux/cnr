@@ -1,6 +1,6 @@
 pkgname=iruka-xbps
 version=0.2.0
-revision=3
+revision=4
 build_style=meson
 hostmakedepends="git pkg-config gettext"
 makedepends="git gtk+3-devel"
